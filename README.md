@@ -94,6 +94,8 @@ Create the first admin account with a password of at least 12 characters. Add an
 
 After setup, the setup screen is disabled automatically.
 
+Admin login is protected by throttling. Repeated failed attempts for the same username and source address are temporarily locked.
+
 ## Endpoint Token Usage
 
 Create endpoints in the admin UI at:
@@ -103,6 +105,8 @@ Create endpoints in the admin UI at:
 ```
 
 Each endpoint token is shown once. Store it in the plugin or connector that submits print jobs.
+
+Endpoints can be enabled, disabled, deleted when they have no job history, and assigned to clients from the endpoint management page.
 
 Submit a print job:
 
@@ -126,6 +130,8 @@ Create clients in the admin UI at:
 ```
 
 Assign one or more endpoints to each client. The client token is shown once.
+
+Assignments can be managed from the client page or from the endpoint page.
 
 Authenticate:
 
