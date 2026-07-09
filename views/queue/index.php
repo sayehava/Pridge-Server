@@ -23,7 +23,8 @@ $title = Text::get('queue.title');
                     <th>ID</th>
                     <th><?= View::e(Text::get('table.status')) ?></th>
                     <th><?= View::e(Text::get('table.endpoint')) ?></th>
-                    <th><?= View::e(Text::get('table.client')) ?></th>
+                    <th><?= View::e(Text::get('table.assigned_clients')) ?></th>
+                    <th><?= View::e(Text::get('table.reserved_by')) ?></th>
                     <th><?= View::e(Text::get('table.content_type')) ?></th>
                     <th><?= View::e(Text::get('table.created')) ?></th>
                     <th><?= View::e(Text::get('table.completed')) ?></th>
@@ -36,7 +37,8 @@ $title = Text::get('queue.title');
                         <td><?= (int) $job['id'] ?></td>
                         <td><span class="badge"><?= View::e((string) $job['status']) ?></span></td>
                         <td><?= View::e((string) $job['endpoint_name']) ?></td>
-                        <td><?= View::e((string) ($job['client_name'] ?? '')) ?></td>
+                        <td><?= View::e((string) ($job['assigned_client_names'] ?? '')) ?></td>
+                        <td><?= View::e((string) ($job['reserved_client_name'] ?? '')) ?></td>
                         <td><?= View::e((string) $job['content_type']) ?></td>
                         <td><?= View::e((string) $job['created_at']) ?></td>
                         <td><?= View::e((string) ($job['completed_at'] ?? '')) ?></td>

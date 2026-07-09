@@ -67,6 +67,8 @@ final class Text
         'table.created' => 'Created',
         'table.endpoint' => 'Endpoint',
         'table.client' => 'Client',
+        'table.assigned_clients' => 'Assigned clients',
+        'table.reserved_by' => 'Reserved by',
         'table.content_type' => 'Content type',
         'table.completed' => 'Completed',
         'table.failed' => 'Failed',

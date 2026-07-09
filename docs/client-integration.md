@@ -13,6 +13,8 @@ Do not send tokens in URL query strings. Use POST bodies or headers only.
 
 Plugins submit raw print payloads to an endpoint.
 
+This route is POST-only. The endpoint token is sent in a request header so the request body can stay as untouched raw print bytes.
+
 Request:
 
 ```http
@@ -36,6 +38,8 @@ Response:
 Notes:
 
 - The request body is stored raw.
+- The endpoint token is not sent in the URL.
+- The endpoint token is not sent in the body for this route because the body is the raw print payload.
 - Binary payloads are allowed.
 - Set `Content-Type` to the payload type when known.
 - Use `application/octet-stream` when the payload type is unknown.
@@ -45,6 +49,8 @@ Notes:
 ## Plugin: Fetch Assigned Clients
 
 An endpoint can fetch clients assigned to it with a POST request.
+
+This route is also POST-only. For this JSON request, the endpoint token should be sent in the POST body.
 
 Request:
 
