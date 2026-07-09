@@ -50,6 +50,17 @@ CREATE TABLE IF NOT EXISTS password_resets (
     FOREIGN KEY (admin_user_id) REFERENCES admin_users(id) ON DELETE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS login_attempts (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT NOT NULL,
+    ip_hash TEXT NOT NULL,
+    attempts INTEGER NOT NULL DEFAULT 0,
+    locked_until TEXT,
+    first_attempt_at TEXT NOT NULL,
+    last_attempt_at TEXT NOT NULL,
+    UNIQUE(username, ip_hash)
+);
+
 CREATE TABLE IF NOT EXISTS endpoints (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
@@ -109,6 +120,7 @@ CREATE TABLE IF NOT EXISTS print_jobs (
 CREATE INDEX IF NOT EXISTS idx_print_jobs_status_created ON print_jobs(status, created_at);
 CREATE INDEX IF NOT EXISTS idx_print_jobs_endpoint_status ON print_jobs(endpoint_id, status);
 CREATE INDEX IF NOT EXISTS idx_client_sessions_expires ON client_sessions(expires_at);
+CREATE INDEX IF NOT EXISTS idx_login_attempts_lock ON login_attempts(username, ip_hash, locked_until);
 SQL);
 
         self::addColumnIfMissing('admin_users', 'email', 'TEXT');

@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace PrintBridge\Controllers;
 
 use PrintBridge\Repositories\AdminRepository;
+use PrintBridge\Repositories\LoginAttemptRepository;
 use PrintBridge\Repositories\PasswordResetRepository;
 use PrintBridge\Services\AdminAuth;
 use PrintBridge\Support\Http;
+use PrintBridge\Support\Security;
 use PrintBridge\Support\View;
 
 final class AuthController
@@ -60,11 +62,22 @@ final class AuthController
 
     public static function login(): void
     {
-        if (AdminAuth::login(Http::post('username'), Http::post('password'))) {
+        $username = Http::post('username');
+        $password = Http::post('password');
+        $ipHash = Security::requestIpHash();
+
+        if (LoginAttemptRepository::isLocked($username, $ipHash)) {
+            View::render('auth/login', ['error' => 'error.login_throttled']);
+            return;
+        }
+
+        if (AdminAuth::login($username, $password)) {
+            LoginAttemptRepository::clear($username, $ipHash);
             Http::redirect('/');
             return;
         }
 
+        LoginAttemptRepository::recordFailure($username, $ipHash);
         View::render('auth/login', ['error' => 'error.invalid_login']);
     }
 

@@ -20,4 +20,11 @@ final class Security
     {
         return hash_equals($storedHash, self::hashToken($providedToken));
     }
+
+    public static function requestIpHash(): string
+    {
+        $ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+
+        return hash('sha256', is_string($ip) ? $ip : 'unknown');
+    }
 }

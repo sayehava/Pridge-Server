@@ -80,6 +80,7 @@ final class Text
         'empty.clients' => 'No clients have been created.',
         'empty.jobs' => 'No jobs have been received.',
         'error.invalid_login' => 'Invalid username or password.',
+        'error.login_throttled' => 'Too many login attempts. Try again later.',
         'error.setup_exists' => 'Setup is already complete.',
         'error.required_fields' => 'All fields are required.',
         'error.password_length' => 'Password must be at least 12 characters.',
