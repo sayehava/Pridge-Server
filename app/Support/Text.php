@@ -21,6 +21,7 @@ final class Text
         'action.send_reset_link' => 'Send reset link',
         'action.disable' => 'Disable',
         'action.enable' => 'Enable',
+        'action.delete' => 'Delete',
         'setup.title' => 'Create the first admin account',
         'setup.help' => 'This setup screen is available only until the first admin user exists.',
         'login.title' => 'Admin login',
@@ -81,6 +82,7 @@ final class Text
         'error.name_required' => 'Name is required.',
         'error.invalid_current_password' => 'Current password is incorrect.',
         'error.invalid_reset_token' => 'Password reset token is invalid or expired.',
+        'error.endpoint_has_jobs' => 'This endpoint has jobs in history and cannot be deleted.',
     ];
 
     public static function get(string $key): string

@@ -44,4 +44,20 @@ final class EndpointRepository
         );
         $stmt->execute([':id' => $id, ':updated_at' => Clock::now()]);
     }
+
+    public static function delete(int $id): bool
+    {
+        $jobCount = Database::connection()
+            ->prepare('SELECT COUNT(*) FROM print_jobs WHERE endpoint_id = :id');
+        $jobCount->execute([':id' => $id]);
+
+        if ((int) $jobCount->fetchColumn() > 0) {
+            return false;
+        }
+
+        $stmt = Database::connection()->prepare('DELETE FROM endpoints WHERE id = :id');
+        $stmt->execute([':id' => $id]);
+
+        return $stmt->rowCount() === 1;
+    }
 }

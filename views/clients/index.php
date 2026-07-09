@@ -65,10 +65,13 @@ $title = Text::get('clients.title');
                         <td><?= View::e((string) ($client['endpoint_names'] ?? '')) ?></td>
                         <td><?= View::e((string) $client['created_at']) ?></td>
                         <td>
-                            <form method="post" action="/clients/<?= (int) $client['id'] ?>/toggle">
+                            <form class="table-action" method="post" action="/clients/<?= (int) $client['id'] ?>/toggle">
                                 <button class="button button-secondary" type="submit">
                                     <?= ((int) $client['enabled'] === 1) ? View::e(Text::get('action.disable')) : View::e(Text::get('action.enable')) ?>
                                 </button>
+                            </form>
+                            <form class="table-action" method="post" action="/clients/<?= (int) $client['id'] ?>/delete">
+                                <button class="button button-danger" type="submit"><?= View::e(Text::get('action.delete')) ?></button>
                             </form>
                         </td>
                     </tr>

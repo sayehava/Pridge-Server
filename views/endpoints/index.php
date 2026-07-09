@@ -55,10 +55,13 @@ $title = Text::get('endpoints.title');
                         <td><?= ((int) $endpoint['enabled'] === 1) ? View::e(Text::get('status.enabled')) : View::e(Text::get('status.disabled')) ?></td>
                         <td><?= View::e((string) $endpoint['created_at']) ?></td>
                         <td>
-                            <form method="post" action="/endpoints/<?= (int) $endpoint['id'] ?>/toggle">
+                            <form class="table-action" method="post" action="/endpoints/<?= (int) $endpoint['id'] ?>/toggle">
                                 <button class="button button-secondary" type="submit">
                                     <?= ((int) $endpoint['enabled'] === 1) ? View::e(Text::get('action.disable')) : View::e(Text::get('action.enable')) ?>
                                 </button>
+                            </form>
+                            <form class="table-action" method="post" action="/endpoints/<?= (int) $endpoint['id'] ?>/delete">
+                                <button class="button button-danger" type="submit"><?= View::e(Text::get('action.delete')) ?></button>
                             </form>
                         </td>
                     </tr>

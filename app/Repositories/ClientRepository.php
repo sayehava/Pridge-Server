@@ -73,4 +73,12 @@ final class ClientRepository
         );
         $stmt->execute([':id' => $id, ':updated_at' => Clock::now()]);
     }
+
+    public static function delete(int $id): bool
+    {
+        $stmt = Database::connection()->prepare('DELETE FROM clients WHERE id = :id');
+        $stmt->execute([':id' => $id]);
+
+        return $stmt->rowCount() === 1;
+    }
 }

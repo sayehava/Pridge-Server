@@ -47,4 +47,11 @@ final class ClientController
         ClientRepository::toggle($id);
         Http::redirect('/clients');
     }
+
+    public static function delete(int $id): void
+    {
+        AdminAuth::requireLogin();
+        ClientRepository::delete($id);
+        Http::redirect('/clients');
+    }
 }

@@ -43,4 +43,15 @@ final class EndpointController
         EndpointRepository::toggle($id);
         Http::redirect('/endpoints');
     }
+
+    public static function delete(int $id): void
+    {
+        AdminAuth::requireLogin();
+
+        if (!EndpointRepository::delete($id)) {
+            Flash::set('error', 'error.endpoint_has_jobs');
+        }
+
+        Http::redirect('/endpoints');
+    }
 }

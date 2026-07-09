@@ -126,6 +126,15 @@ textarea {
     background: #e1e7ee;
 }
 
+.button-danger {
+    background: #fff0ed;
+    color: var(--danger);
+}
+
+.button-danger:hover {
+    background: #ffdcd5;
+}
+
 .alert {
     background: #fff0ed;
     border: 1px solid #ffd1c8;
@@ -235,6 +244,11 @@ th {
     color: var(--muted);
     font-size: 13px;
     font-weight: 650;
+}
+
+.table-action {
+    display: inline-block;
+    margin: 2px 4px 2px 0;
 }
 
 .empty {
