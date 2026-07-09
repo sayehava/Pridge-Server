@@ -150,6 +150,7 @@ More detailed integration instructions are available in:
 
 ```text
 docs/client-integration.md
+docs/endpoint-agent-development.md
 ```
 
 Plugin route:
