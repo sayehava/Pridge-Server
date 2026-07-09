@@ -72,4 +72,44 @@ if (preg_match('#^/clients/(\d+)/toggle$#', $path, $matches) && $method === 'POS
     exit;
 }
 
+if ($path === '/api/plugin/jobs' && $method === 'POST') {
+    \PrintBridge\Controllers\ApiController::receiveJob();
+    exit;
+}
+
+if ($path === '/api/client/auth' && $method === 'POST') {
+    \PrintBridge\Controllers\ApiController::authenticateClient();
+    exit;
+}
+
+if ($path === '/api/client/jobs' && $method === 'GET') {
+    \PrintBridge\Controllers\ApiController::listClientJobs();
+    exit;
+}
+
+if ($path === '/api/client/jobs/reserve' && $method === 'POST') {
+    \PrintBridge\Controllers\ApiController::reserveClientJob();
+    exit;
+}
+
+if (preg_match('#^/api/client/jobs/(\d+)/printing$#', $path, $matches) && $method === 'POST') {
+    \PrintBridge\Controllers\ApiController::markPrinting((int) $matches[1]);
+    exit;
+}
+
+if (preg_match('#^/api/client/jobs/(\d+)/printed$#', $path, $matches) && $method === 'POST') {
+    \PrintBridge\Controllers\ApiController::markPrinted((int) $matches[1]);
+    exit;
+}
+
+if (preg_match('#^/api/client/jobs/(\d+)/failed$#', $path, $matches) && $method === 'POST') {
+    \PrintBridge\Controllers\ApiController::markFailed((int) $matches[1]);
+    exit;
+}
+
+if ($path === '/api/client/heartbeat' && $method === 'POST') {
+    \PrintBridge\Controllers\ApiController::heartbeat();
+    exit;
+}
+
 \PrintBridge\Support\Http::notFound();

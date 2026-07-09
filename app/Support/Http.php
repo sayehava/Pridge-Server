@@ -39,4 +39,33 @@ final class Http
 
         return is_string($value) ? trim($value) : $default;
     }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public static function jsonInput(): array
+    {
+        $raw = file_get_contents('php://input');
+
+        if ($raw === false || $raw === '') {
+            return [];
+        }
+
+        $decoded = json_decode($raw, true);
+
+        return is_array($decoded) ? $decoded : [];
+    }
+
+    public static function bearerToken(): ?string
+    {
+        $header = $_SERVER['HTTP_AUTHORIZATION'] ?? '';
+
+        if (!is_string($header) || stripos($header, 'Bearer ') !== 0) {
+            return null;
+        }
+
+        $token = trim(substr($header, 7));
+
+        return $token !== '' ? $token : null;
+    }
 }
