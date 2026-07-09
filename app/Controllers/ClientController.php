@@ -28,7 +28,8 @@ final class ClientController
     {
         AdminAuth::requireLogin();
         $name = Http::post('name');
-        $endpointIds = array_map('intval', $_POST['endpoint_ids'] ?? []);
+        $submittedEndpointIds = $_POST['endpoint_ids'] ?? [];
+        $endpointIds = is_array($submittedEndpointIds) ? array_map('intval', $submittedEndpointIds) : [];
 
         if ($name === '') {
             Flash::set('error', 'error.name_required');
