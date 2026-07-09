@@ -1,0 +1,50 @@
+<?php
+
+use PrintBridge\Support\Text;
+use PrintBridge\Support\View;
+
+$title = Text::get('queue.title');
+?>
+<section class="hero">
+    <div>
+        <h1><?= View::e(Text::get('queue.title')) ?></h1>
+        <p><?= View::e(Text::get('queue.subtitle')) ?></p>
+    </div>
+</section>
+
+<section class="panel">
+    <?php if (empty($jobs)): ?>
+        <p class="empty"><?= View::e(Text::get('empty.jobs')) ?></p>
+    <?php else: ?>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th><?= View::e(Text::get('table.status')) ?></th>
+                    <th><?= View::e(Text::get('table.endpoint')) ?></th>
+                    <th><?= View::e(Text::get('table.client')) ?></th>
+                    <th><?= View::e(Text::get('table.content_type')) ?></th>
+                    <th><?= View::e(Text::get('table.created')) ?></th>
+                    <th><?= View::e(Text::get('table.completed')) ?></th>
+                    <th><?= View::e(Text::get('table.failed')) ?></th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php foreach ($jobs as $job): ?>
+                    <tr>
+                        <td><?= (int) $job['id'] ?></td>
+                        <td><span class="badge"><?= View::e((string) $job['status']) ?></span></td>
+                        <td><?= View::e((string) $job['endpoint_name']) ?></td>
+                        <td><?= View::e((string) ($job['client_name'] ?? '')) ?></td>
+                        <td><?= View::e((string) $job['content_type']) ?></td>
+                        <td><?= View::e((string) $job['created_at']) ?></td>
+                        <td><?= View::e((string) ($job['completed_at'] ?? '')) ?></td>
+                        <td><?= View::e((string) ($job['failed_at'] ?? '')) ?></td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    <?php endif; ?>
+</section>

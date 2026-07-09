@@ -42,4 +42,28 @@ final class AdminRepository
 
         return is_array($admin) ? $admin : null;
     }
+
+    /**
+     * @return array{id:int,username:string,password_hash:string}|null
+     */
+    public static function findById(int $id): ?array
+    {
+        $stmt = Database::connection()->prepare('SELECT id, username, password_hash FROM admin_users WHERE id = :id');
+        $stmt->execute([':id' => $id]);
+        $admin = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return is_array($admin) ? $admin : null;
+    }
+
+    public static function updatePassword(int $id, string $password): void
+    {
+        $stmt = Database::connection()->prepare(
+            'UPDATE admin_users SET password_hash = :password_hash, updated_at = :updated_at WHERE id = :id'
+        );
+        $stmt->execute([
+            ':id' => $id,
+            ':password_hash' => password_hash($password, PASSWORD_DEFAULT),
+            ':updated_at' => Clock::now(),
+        ]);
+    }
 }

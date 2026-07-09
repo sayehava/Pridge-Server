@@ -77,6 +77,21 @@ if ($path === '/api/plugin/jobs' && $method === 'POST') {
     exit;
 }
 
+if ($path === '/queue' && $method === 'GET') {
+    \PrintBridge\Controllers\QueueController::index();
+    exit;
+}
+
+if ($path === '/settings' && $method === 'GET') {
+    \PrintBridge\Controllers\SettingsController::index();
+    exit;
+}
+
+if ($path === '/settings/password' && $method === 'POST') {
+    \PrintBridge\Controllers\SettingsController::changePassword();
+    exit;
+}
+
 if ($path === '/api/client/auth' && $method === 'POST') {
     \PrintBridge\Controllers\ApiController::authenticateClient();
     exit;
