@@ -251,6 +251,16 @@ th {
     margin: 2px 4px 2px 0;
 }
 
+.assignment-form {
+    display: grid;
+    gap: 8px;
+    min-width: 220px;
+}
+
+.assignment-form select {
+    min-height: 82px;
+}
+
 .empty {
     color: var(--muted);
     margin: 0;

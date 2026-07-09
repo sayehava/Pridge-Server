@@ -16,7 +16,16 @@ final class EndpointRepository
     public static function all(): array
     {
         return Database::connection()
-            ->query('SELECT id, name, enabled, created_at, updated_at FROM endpoints ORDER BY created_at DESC')
+            ->query(
+                'SELECT e.id, e.name, e.enabled, e.created_at, e.updated_at,
+                    GROUP_CONCAT(c.id) AS client_ids,
+                    GROUP_CONCAT(c.name, ", ") AS client_names
+                 FROM endpoints e
+                 LEFT JOIN client_endpoint_assignments cea ON cea.endpoint_id = e.id
+                 LEFT JOIN clients c ON c.id = cea.client_id
+                 GROUP BY e.id
+                 ORDER BY e.created_at DESC'
+            )
             ->fetchAll();
     }
 
@@ -59,5 +68,37 @@ final class EndpointRepository
         $stmt->execute([':id' => $id]);
 
         return $stmt->rowCount() === 1;
+    }
+
+    /**
+     * @param array<int, int> $clientIds
+     */
+    public static function syncClients(int $endpointId, array $clientIds): void
+    {
+        $db = Database::connection();
+        $now = Clock::now();
+        $db->beginTransaction();
+
+        $delete = $db->prepare('DELETE FROM client_endpoint_assignments WHERE endpoint_id = :endpoint_id');
+        $delete->execute([':endpoint_id' => $endpointId]);
+
+        $insert = $db->prepare(
+            'INSERT OR IGNORE INTO client_endpoint_assignments (client_id, endpoint_id, created_at)
+             VALUES (:client_id, :endpoint_id, :created_at)'
+        );
+
+        foreach (array_unique($clientIds) as $clientId) {
+            if ($clientId <= 0) {
+                continue;
+            }
+
+            $insert->execute([
+                ':client_id' => $clientId,
+                ':endpoint_id' => $endpointId,
+                ':created_at' => $now,
+            ]);
+        }
+
+        $db->commit();
     }
 }

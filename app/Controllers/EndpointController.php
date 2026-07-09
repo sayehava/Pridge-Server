@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PrintBridge\Controllers;
 
+use PrintBridge\Repositories\ClientRepository;
 use PrintBridge\Repositories\EndpointRepository;
 use PrintBridge\Services\AdminAuth;
 use PrintBridge\Support\Flash;
@@ -17,6 +18,7 @@ final class EndpointController
         AdminAuth::requireLogin();
         View::render('endpoints/index', [
             'endpoints' => EndpointRepository::all(),
+            'clients' => ClientRepository::all(),
             'token' => Flash::pull('endpoint_token'),
             'error' => Flash::pull('error'),
         ]);
@@ -52,6 +54,16 @@ final class EndpointController
             Flash::set('error', 'error.endpoint_has_jobs');
         }
 
+        Http::redirect('/endpoints');
+    }
+
+    public static function assignClients(int $id): void
+    {
+        AdminAuth::requireLogin();
+        $submittedClientIds = $_POST['client_ids'] ?? [];
+        $clientIds = is_array($submittedClientIds) ? array_map('intval', $submittedClientIds) : [];
+
+        EndpointRepository::syncClients($id, $clientIds);
         Http::redirect('/endpoints');
     }
 }

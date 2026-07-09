@@ -44,6 +44,7 @@ $title = Text::get('endpoints.title');
                 <tr>
                     <th><?= View::e(Text::get('table.name')) ?></th>
                     <th><?= View::e(Text::get('table.status')) ?></th>
+                    <th><?= View::e(Text::get('table.clients')) ?></th>
                     <th><?= View::e(Text::get('table.created')) ?></th>
                     <th><?= View::e(Text::get('table.actions')) ?></th>
                 </tr>
@@ -53,6 +54,24 @@ $title = Text::get('endpoints.title');
                     <tr>
                         <td><?= View::e((string) $endpoint['name']) ?></td>
                         <td><?= ((int) $endpoint['enabled'] === 1) ? View::e(Text::get('status.enabled')) : View::e(Text::get('status.disabled')) ?></td>
+                        <td>
+                            <form method="post" action="/endpoints/<?= (int) $endpoint['id'] ?>/clients" class="assignment-form">
+                                <label>
+                                    <?= View::e(Text::get('field.assign_clients')) ?>
+                                    <select name="client_ids[]" multiple>
+                                        <?php
+                                        $assignedClientIds = array_filter(explode(',', (string) ($endpoint['client_ids'] ?? '')));
+                                        ?>
+                                        <?php foreach ($clients as $client): ?>
+                                            <option value="<?= (int) $client['id'] ?>" <?= in_array((string) $client['id'], $assignedClientIds, true) ? 'selected' : '' ?>>
+                                                <?= View::e((string) $client['name']) ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </label>
+                                <button class="button button-secondary" type="submit"><?= View::e(Text::get('action.update')) ?></button>
+                            </form>
+                        </td>
                         <td><?= View::e((string) $endpoint['created_at']) ?></td>
                         <td>
                             <form class="table-action" method="post" action="/endpoints/<?= (int) $endpoint['id'] ?>/toggle">
