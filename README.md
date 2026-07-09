@@ -13,10 +13,29 @@ It provides an admin web UI, plugin-side print job receiving, client-side job pu
 
 ## Installation
 
-Upload the project to your hosting account and point the web root to:
+### cPanel Subdomain Installation
+
+This project can run directly from the folder that cPanel creates for a subdomain.
+
+Upload the project files into the subdomain document root, for example:
 
 ```text
-public
+public_html/printbridge
+```
+
+or:
+
+```text
+printbridge.yourdomain.com
+```
+
+The root `index.php` and `.htaccess` files handle requests from that folder. You do not need to point cPanel to the `public` folder.
+
+Make sure PHP can write to:
+
+```text
+storage
+storage/database
 ```
 
 The application creates the SQLite database automatically at:
@@ -25,7 +44,25 @@ The application creates the SQLite database automatically at:
 storage/database/printbridge.sqlite
 ```
 
-For local development:
+### Optional Public Web Root Installation
+
+If your hosting panel supports custom document roots, the stricter deployment is still available:
+
+```text
+public
+```
+
+Both layouts use the same application code.
+
+### Local Development
+
+For the cPanel-style root layout:
+
+```bash
+php -S 127.0.0.1:8080
+```
+
+For the stricter public web root layout:
 
 ```bash
 php -S 127.0.0.1:8080 -t public
@@ -39,7 +76,9 @@ http://127.0.0.1:8080
 
 ## SQLite Protection
 
-The `storage`, `storage/database`, and `app` directories include `.htaccess` files that deny direct web access on Apache-compatible hosting.
+The `storage`, `storage/database`, `app`, and `views` directories include `.htaccess` files that deny direct web access on Apache-compatible hosting.
+
+The root `.htaccess` also disables directory indexes, routes clean URLs to `index.php`, and blocks direct access to project documentation files.
 
 For best production security, keep `storage` outside the public web root when your host allows it. Never expose `printbridge.sqlite` through HTTP.
 
