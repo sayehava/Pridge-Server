@@ -7,6 +7,9 @@ $title = Text::get('login.title');
 ?>
 <section class="auth-panel">
     <h1><?= View::e(Text::get('login.title')) ?></h1>
+    <?php if (!empty($message)): ?>
+        <div class="notice"><strong><?= View::e(Text::get($message)) ?></strong></div>
+    <?php endif; ?>
     <?php if (!empty($error)): ?>
         <div class="alert"><?= View::e(Text::get($error)) ?></div>
     <?php endif; ?>
@@ -21,4 +24,5 @@ $title = Text::get('login.title');
         </label>
         <button class="button" type="submit"><?= View::e(Text::get('action.login')) ?></button>
     </form>
+    <p class="auth-link"><a href="/forgot-password"><?= View::e(Text::get('password.forgot_title')) ?></a></p>
 </section>

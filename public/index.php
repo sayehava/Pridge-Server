@@ -37,6 +37,26 @@ if ($path === '/login' && $method === 'POST') {
     exit;
 }
 
+if ($path === '/forgot-password' && $method === 'GET') {
+    \PrintBridge\Controllers\AuthController::forgotPasswordForm();
+    exit;
+}
+
+if ($path === '/forgot-password' && $method === 'POST') {
+    \PrintBridge\Controllers\AuthController::forgotPassword();
+    exit;
+}
+
+if ($path === '/reset-password' && $method === 'GET') {
+    \PrintBridge\Controllers\AuthController::resetPasswordForm();
+    exit;
+}
+
+if ($path === '/reset-password' && $method === 'POST') {
+    \PrintBridge\Controllers\AuthController::resetPassword();
+    exit;
+}
+
 if ($path === '/logout' && $method === 'POST') {
     \PrintBridge\Controllers\AuthController::logout();
     exit;

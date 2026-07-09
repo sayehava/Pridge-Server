@@ -17,14 +17,15 @@ final class AdminRepository
         return (int) $stmt->fetchColumn() > 0;
     }
 
-    public static function create(string $username, string $password): void
+    public static function create(string $username, string $password, ?string $email = null): void
     {
         $now = Clock::now();
         $stmt = Database::connection()->prepare(
-            'INSERT INTO admin_users (username, password_hash, created_at, updated_at) VALUES (:username, :password_hash, :created_at, :updated_at)'
+            'INSERT INTO admin_users (username, email, password_hash, created_at, updated_at) VALUES (:username, :email, :password_hash, :created_at, :updated_at)'
         );
         $stmt->execute([
             ':username' => $username,
+            ':email' => $email,
             ':password_hash' => password_hash($password, PASSWORD_DEFAULT),
             ':created_at' => $now,
             ':updated_at' => $now,
@@ -32,11 +33,11 @@ final class AdminRepository
     }
 
     /**
-     * @return array{id:int,username:string,password_hash:string}|null
+     * @return array{id:int,username:string,email:?string,password_hash:string}|null
      */
     public static function findByUsername(string $username): ?array
     {
-        $stmt = Database::connection()->prepare('SELECT id, username, password_hash FROM admin_users WHERE username = :username');
+        $stmt = Database::connection()->prepare('SELECT id, username, email, password_hash FROM admin_users WHERE username = :username');
         $stmt->execute([':username' => $username]);
         $admin = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -44,11 +45,11 @@ final class AdminRepository
     }
 
     /**
-     * @return array{id:int,username:string,password_hash:string}|null
+     * @return array{id:int,username:string,email:?string,password_hash:string}|null
      */
     public static function findById(int $id): ?array
     {
-        $stmt = Database::connection()->prepare('SELECT id, username, password_hash FROM admin_users WHERE id = :id');
+        $stmt = Database::connection()->prepare('SELECT id, username, email, password_hash FROM admin_users WHERE id = :id');
         $stmt->execute([':id' => $id]);
         $admin = $stmt->fetch(PDO::FETCH_ASSOC);
 

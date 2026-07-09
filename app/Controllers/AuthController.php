@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PrintBridge\Controllers;
 
 use PrintBridge\Repositories\AdminRepository;
+use PrintBridge\Repositories\PasswordResetRepository;
 use PrintBridge\Services\AdminAuth;
 use PrintBridge\Support\Http;
 use PrintBridge\Support\View;
@@ -29,6 +30,7 @@ final class AuthController
         }
 
         $username = Http::post('username');
+        $email = Http::post('email');
         $password = Http::post('password');
 
         if ($username === '' || $password === '') {
@@ -41,7 +43,7 @@ final class AuthController
             return;
         }
 
-        AdminRepository::create($username, $password);
+        AdminRepository::create($username, $password, $email !== '' ? $email : null);
         AdminAuth::login($username, $password);
         Http::redirect('/');
     }
@@ -70,5 +72,62 @@ final class AuthController
     {
         AdminAuth::logout();
         Http::redirect('/login');
+    }
+
+    public static function forgotPasswordForm(): void
+    {
+        View::render('auth/forgot-password');
+    }
+
+    public static function forgotPassword(): void
+    {
+        $username = Http::post('username');
+        $admin = $username !== '' ? AdminRepository::findByUsername($username) : null;
+
+        if ($admin !== null && !empty($admin['email'])) {
+            $token = PasswordResetRepository::create((int) $admin['id']);
+            $link = self::baseUrl() . '/reset-password?token=' . rawurlencode($token);
+            $subject = 'PrintBridge password reset';
+            $body = "Use this link to reset your PrintBridge admin password:\n\n" . $link . "\n\nThis link expires in one hour.";
+            @mail((string) $admin['email'], $subject, $body);
+        }
+
+        View::render('auth/forgot-password', ['message' => 'password.forgot_sent']);
+    }
+
+    public static function resetPasswordForm(): void
+    {
+        $token = $_GET['token'] ?? '';
+        View::render('auth/reset-password', ['token' => is_string($token) ? $token : '']);
+    }
+
+    public static function resetPassword(): void
+    {
+        $token = Http::post('token');
+        $password = Http::post('password');
+        $reset = $token !== '' ? PasswordResetRepository::findValid($token) : null;
+
+        if ($reset === null) {
+            View::render('auth/reset-password', ['error' => 'error.invalid_reset_token', 'token' => '']);
+            return;
+        }
+
+        if (strlen($password) < 12) {
+            View::render('auth/reset-password', ['error' => 'error.password_length', 'token' => $token]);
+            return;
+        }
+
+        AdminRepository::updatePassword((int) $reset['admin_user_id'], $password);
+        PasswordResetRepository::markUsed((int) $reset['id']);
+        View::render('auth/login', ['message' => 'password.reset_complete']);
+    }
+
+    private static function baseUrl(): string
+    {
+        $https = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off');
+        $scheme = $https ? 'https' : 'http';
+        $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+
+        return $scheme . '://' . $host;
     }
 }

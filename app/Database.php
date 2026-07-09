@@ -34,6 +34,7 @@ final class Database
 CREATE TABLE IF NOT EXISTS admin_users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     username TEXT NOT NULL UNIQUE,
+    email TEXT,
     password_hash TEXT NOT NULL,
     created_at TEXT NOT NULL,
     updated_at TEXT NOT NULL
@@ -109,5 +110,21 @@ CREATE INDEX IF NOT EXISTS idx_print_jobs_status_created ON print_jobs(status, c
 CREATE INDEX IF NOT EXISTS idx_print_jobs_endpoint_status ON print_jobs(endpoint_id, status);
 CREATE INDEX IF NOT EXISTS idx_client_sessions_expires ON client_sessions(expires_at);
 SQL);
+
+        self::addColumnIfMissing('admin_users', 'email', 'TEXT');
+    }
+
+    private static function addColumnIfMissing(string $table, string $column, string $definition): void
+    {
+        $db = self::connection();
+        $columns = $db->query('PRAGMA table_info(' . $table . ')')->fetchAll();
+
+        foreach ($columns as $existingColumn) {
+            if (($existingColumn['name'] ?? null) === $column) {
+                return;
+            }
+        }
+
+        $db->exec('ALTER TABLE ' . $table . ' ADD COLUMN ' . $column . ' ' . $definition);
     }
 }

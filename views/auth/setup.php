@@ -17,6 +17,10 @@ $title = Text::get('setup.title');
             <input name="username" autocomplete="username" required>
         </label>
         <label>
+            <?= View::e(Text::get('field.email')) ?>
+            <input name="email" type="email" autocomplete="email">
+        </label>
+        <label>
             <?= View::e(Text::get('field.password')) ?>
             <input name="password" type="password" autocomplete="new-password" minlength="12" required>
         </label>
