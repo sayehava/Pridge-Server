@@ -105,6 +105,11 @@ if ($path === '/api/plugin/jobs' && $method === 'POST') {
     exit;
 }
 
+if ($path === '/api/plugin/clients' && $method === 'POST') {
+    \PrintBridge\Controllers\ApiController::listEndpointClients();
+    exit;
+}
+
 if ($path === '/queue' && $method === 'GET') {
     \PrintBridge\Controllers\QueueController::index();
     exit;

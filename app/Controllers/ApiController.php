@@ -32,6 +32,21 @@ final class ApiController
         Http::json(['job_id' => $jobId, 'status' => 'pending'], 201);
     }
 
+    public static function listEndpointClients(): void
+    {
+        $endpoint = self::endpointFromPostToken();
+
+        if ($endpoint === null) {
+            Http::json(['error' => 'Invalid endpoint token.'], 401);
+            return;
+        }
+
+        Http::json([
+            'endpoint' => ['id' => (int) $endpoint['id'], 'name' => $endpoint['name']],
+            'clients' => ApiRepository::listClientsForEndpoint((int) $endpoint['id']),
+        ]);
+    }
+
     public static function authenticateClient(): void
     {
         $input = Http::jsonInput();
@@ -134,6 +149,25 @@ final class ApiController
 
         if ($token === null) {
             $token = $_SERVER['HTTP_X_ENDPOINT_TOKEN'] ?? null;
+        }
+
+        return is_string($token) ? ApiRepository::findEndpointByToken($token) : null;
+    }
+
+    /**
+     * @return array{id:int,name:string}|null
+     */
+    private static function endpointFromPostToken(): ?array
+    {
+        $input = Http::jsonInput();
+        $token = isset($input['token']) && is_string($input['token']) ? $input['token'] : null;
+
+        if ($token === null || $token === '') {
+            $token = Http::bearerToken();
+        }
+
+        if ($token === null || $token === '') {
+            $token = $_POST['token'] ?? null;
         }
 
         return is_string($token) ? ApiRepository::findEndpointByToken($token) : null;
