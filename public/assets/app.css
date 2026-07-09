@@ -175,6 +175,73 @@ textarea {
     font-size: 34px;
 }
 
+.panel {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    margin-bottom: 18px;
+    padding: 20px;
+}
+
+.panel h2 {
+    font-size: 18px;
+    margin: 0 0 16px;
+}
+
+.inline-form {
+    align-items: end;
+    display: grid;
+    gap: 16px;
+    grid-template-columns: 1fr auto;
+}
+
+.notice {
+    background: #eefaf5;
+    border: 1px solid #b9e4cf;
+    border-radius: 8px;
+    display: grid;
+    gap: 10px;
+    margin-bottom: 18px;
+    padding: 14px;
+}
+
+code {
+    background: #101828;
+    border-radius: 6px;
+    color: #ffffff;
+    display: block;
+    overflow-x: auto;
+    padding: 12px;
+}
+
+.table-wrap {
+    overflow-x: auto;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th,
+td {
+    border-bottom: 1px solid var(--line);
+    padding: 12px 10px;
+    text-align: left;
+    vertical-align: middle;
+}
+
+th {
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 650;
+}
+
+.empty {
+    color: var(--muted);
+    margin: 0;
+}
+
 @media (max-width: 760px) {
     .topbar,
     .hero {
@@ -188,6 +255,10 @@ textarea {
 
     .metric-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .inline-form {
+        grid-template-columns: 1fr;
     }
 }
 

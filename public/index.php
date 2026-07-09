@@ -42,4 +42,34 @@ if ($path === '/logout' && $method === 'POST') {
     exit;
 }
 
+if ($path === '/endpoints' && $method === 'GET') {
+    \PrintBridge\Controllers\EndpointController::index();
+    exit;
+}
+
+if ($path === '/endpoints' && $method === 'POST') {
+    \PrintBridge\Controllers\EndpointController::create();
+    exit;
+}
+
+if (preg_match('#^/endpoints/(\d+)/toggle$#', $path, $matches) && $method === 'POST') {
+    \PrintBridge\Controllers\EndpointController::toggle((int) $matches[1]);
+    exit;
+}
+
+if ($path === '/clients' && $method === 'GET') {
+    \PrintBridge\Controllers\ClientController::index();
+    exit;
+}
+
+if ($path === '/clients' && $method === 'POST') {
+    \PrintBridge\Controllers\ClientController::create();
+    exit;
+}
+
+if (preg_match('#^/clients/(\d+)/toggle$#', $path, $matches) && $method === 'POST') {
+    \PrintBridge\Controllers\ClientController::toggle((int) $matches[1]);
+    exit;
+}
+
 \PrintBridge\Support\Http::notFound();
