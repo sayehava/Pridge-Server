@@ -140,9 +140,16 @@ The response contains a temporary bearer token for client API calls.
 
 ## API Routes
 
+More detailed integration instructions are available in:
+
+```text
+docs/client-integration.md
+```
+
 Plugin route:
 
 - `POST /api/plugin/jobs` receives a raw print payload for the authenticated endpoint.
+- `POST /api/plugin/clients` returns clients assigned to an authenticated endpoint.
 
 Client routes:
 
