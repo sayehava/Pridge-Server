@@ -118,8 +118,46 @@ a {
 
 .brand img {
     display: block;
-    height: 48px;
+    height: 100px;
     width: auto;
+}
+
+.nav-toggle {
+    align-items: center;
+    background: rgba(255, 255, 255, .04);
+    border: 0;
+    border-radius: var(--radius-sm);
+    box-shadow: 0 0 0 1px var(--line-strong) inset;
+    cursor: pointer;
+    display: none;
+    flex-direction: column;
+    gap: 4px;
+    height: 40px;
+    justify-content: center;
+    margin-left: auto;
+    padding: 0;
+    width: 44px;
+}
+
+.nav-toggle span {
+    background: var(--text);
+    border-radius: 2px;
+    display: block;
+    height: 2px;
+    transition: transform .2s ease, opacity .2s ease;
+    width: 20px;
+}
+
+.topbar.nav-open .nav-toggle span:nth-child(1) {
+    transform: translateY(6px) rotate(45deg);
+}
+
+.topbar.nav-open .nav-toggle span:nth-child(2) {
+    opacity: 0;
+}
+
+.topbar.nav-open .nav-toggle span:nth-child(3) {
+    transform: translateY(-6px) rotate(-45deg);
 }
 
 .nav {
@@ -127,6 +165,7 @@ a {
     flex: 1;
     flex-wrap: wrap;
     gap: 4px;
+    justify-content: center;
 }
 
 .nav a {
@@ -708,14 +747,43 @@ tbody tr:last-child td {
 }
 
 @media (max-width: 760px) {
-    .topbar,
     .hero {
         align-items: flex-start;
         flex-direction: column;
     }
 
-    .nav {
+    .topbar {
         flex-wrap: wrap;
+        row-gap: 12px;
+    }
+
+    .brand img {
+        height: 64px;
+    }
+
+    .nav-toggle {
+        display: flex;
+    }
+
+    .nav,
+    .logout-form {
+        display: none;
+        flex-basis: 100%;
+    }
+
+    .topbar.nav-open .nav,
+    .topbar.nav-open .logout-form {
+        display: flex;
+    }
+
+    .nav {
+        flex-direction: column;
+        gap: 4px;
+        justify-content: flex-start;
+    }
+
+    .nav a {
+        width: 100%;
     }
 
     .metric-grid {

@@ -17,6 +17,7 @@ final class Text
         'about.license_name' => 'GNU Affero General Public License v3.0 (AGPL-3.0)',
         'about.license_note' => 'This is free software: you may run, study, and modify it. If you run a modified version as a network service, you must make your changes available to its users and keep this attribution.',
         'action.close' => 'Close',
+        'action.toggle_nav' => 'Toggle navigation',
         'nav.dashboard' => 'Dashboard',
         'nav.endpoints' => 'Endpoints',
         'nav.clients' => 'Clients',

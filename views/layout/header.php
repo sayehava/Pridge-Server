@@ -16,12 +16,15 @@ $isLoggedIn = AdminAuth::userId() !== null;
     <link rel="stylesheet" href="/assets/app.css">
 </head>
 <body>
-<header class="topbar">
+<header class="topbar" id="topbar">
     <button type="button" class="brand" onclick="document.getElementById('about-modal').showModal()" aria-haspopup="dialog" title="<?= View::e(Text::get('about.open')) ?>">
         <img src="/assets/logo.png" alt="<?= View::e(Text::get('app.name')) ?>">
     </button>
     <?php if ($isLoggedIn): ?>
-        <nav class="nav">
+        <button type="button" class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="site-nav" aria-label="<?= View::e(Text::get('action.toggle_nav')) ?>">
+            <span></span><span></span><span></span>
+        </button>
+        <nav class="nav" id="site-nav">
             <a href="/"><?= View::e(Text::get('nav.dashboard')) ?></a>
             <a href="/endpoints"><?= View::e(Text::get('nav.endpoints')) ?></a>
             <a href="/clients"><?= View::e(Text::get('nav.clients')) ?></a>
@@ -29,7 +32,7 @@ $isLoggedIn = AdminAuth::userId() !== null;
             <a href="/archive"><?= View::e(Text::get('nav.archive')) ?></a>
             <a href="/settings"><?= View::e(Text::get('nav.settings')) ?></a>
         </nav>
-        <form method="post" action="/logout">
+        <form method="post" action="/logout" class="logout-form">
             <button class="button button-secondary" type="submit"><?= View::e(Text::get('action.logout')) ?></button>
         </form>
     <?php endif; ?>
@@ -60,6 +63,20 @@ $isLoggedIn = AdminAuth::userId() !== null;
             this.close();
         }
     });
+
+    (function () {
+        var toggle = document.getElementById('nav-toggle');
+        var topbar = document.getElementById('topbar');
+
+        if (!toggle || !topbar) {
+            return;
+        }
+
+        toggle.addEventListener('click', function () {
+            var isOpen = topbar.classList.toggle('nav-open');
+            toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        });
+    })();
 </script>
 
 <main class="page">
