@@ -80,6 +80,16 @@ if (preg_match('#^/endpoints/(\d+)/clients$#', $path, $matches) && $method === '
     exit;
 }
 
+if (preg_match('#^/endpoints/(\d+)/rename$#', $path, $matches) && $method === 'POST') {
+    \PrintBridge\Controllers\EndpointController::rename((int) $matches[1]);
+    exit;
+}
+
+if (preg_match('#^/endpoints/(\d+)/regenerate$#', $path, $matches) && $method === 'POST') {
+    \PrintBridge\Controllers\EndpointController::regenerateToken((int) $matches[1]);
+    exit;
+}
+
 if (preg_match('#^/endpoints/(\d+)/delete$#', $path, $matches) && $method === 'POST') {
     \PrintBridge\Controllers\EndpointController::delete((int) $matches[1]);
     exit;

@@ -54,6 +54,25 @@ final class EndpointRepository
         $stmt->execute([':id' => $id, ':updated_at' => Clock::now()]);
     }
 
+    public static function rename(int $id, string $name): void
+    {
+        $stmt = Database::connection()->prepare(
+            'UPDATE endpoints SET name = :name, updated_at = :updated_at WHERE id = :id'
+        );
+        $stmt->execute([':id' => $id, ':name' => $name, ':updated_at' => Clock::now()]);
+    }
+
+    public static function regenerateToken(int $id): string
+    {
+        $token = Security::randomToken();
+        $stmt = Database::connection()->prepare(
+            'UPDATE endpoints SET token_hash = :token_hash, updated_at = :updated_at WHERE id = :id'
+        );
+        $stmt->execute([':id' => $id, ':token_hash' => Security::hashToken($token), ':updated_at' => Clock::now()]);
+
+        return $token;
+    }
+
     public static function delete(int $id): bool
     {
         $jobCount = Database::connection()

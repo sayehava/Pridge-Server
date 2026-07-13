@@ -18,7 +18,7 @@ $title = Text::get('endpoints.title');
 
 <?php if (!empty($token)): ?>
     <div class="notice">
-        <strong><?= View::e(Text::get('endpoints.token_created')) ?></strong>
+        <strong><?= View::e(Text::get($tokenMessage ?? 'endpoints.token_created')) ?></strong>
         <code><?= View::e($token) ?></code>
     </div>
 <?php endif; ?>
@@ -52,7 +52,12 @@ $title = Text::get('endpoints.title');
                 <tbody>
                 <?php foreach ($endpoints as $endpoint): ?>
                     <tr>
-                        <td><?= View::e((string) $endpoint['name']) ?></td>
+                        <td>
+                            <form class="table-action" method="post" action="/endpoints/<?= (int) $endpoint['id'] ?>/rename">
+                                <input name="name" value="<?= View::e((string) $endpoint['name']) ?>" required>
+                                <button class="button button-secondary" type="submit"><?= View::e(Text::get('action.rename')) ?></button>
+                            </form>
+                        </td>
                         <td><?= ((int) $endpoint['enabled'] === 1) ? View::e(Text::get('status.enabled')) : View::e(Text::get('status.disabled')) ?></td>
                         <td>
                             <form method="post" action="/endpoints/<?= (int) $endpoint['id'] ?>/clients" class="assignment-form">
@@ -78,6 +83,9 @@ $title = Text::get('endpoints.title');
                                 <button class="button button-secondary" type="submit">
                                     <?= ((int) $endpoint['enabled'] === 1) ? View::e(Text::get('action.disable')) : View::e(Text::get('action.enable')) ?>
                                 </button>
+                            </form>
+                            <form class="table-action" method="post" action="/endpoints/<?= (int) $endpoint['id'] ?>/regenerate" onsubmit="return confirm('Regenerate the token for this endpoint? The old token will stop working immediately.');">
+                                <button class="button button-secondary" type="submit"><?= View::e(Text::get('action.regenerate')) ?></button>
                             </form>
                             <form class="table-action" method="post" action="/endpoints/<?= (int) $endpoint['id'] ?>/delete">
                                 <button class="button button-danger" type="submit"><?= View::e(Text::get('action.delete')) ?></button>
