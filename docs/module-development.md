@@ -253,6 +253,179 @@ class PrintBridge extends Module
 }
 ```
 
+### Drupal
+
+Drupal modules typically react to entity hooks (for Drupal Commerce orders) or PSR-14 events. Use the core `http_client` service (Guzzle) and the module's own config object for settings:
+
+```php
+<?php
+
+use Drupal\Core\Entity\EntityInterface;
+
+/**
+ * Implements hook_ENTITY_TYPE_update() for commerce_order.
+ */
+function printbridge_commerce_order_update(EntityInterface $order) {
+  if ($order->getState()->getId() !== 'completed') {
+    return;
+  }
+
+  $config = \Drupal::config('printbridge.settings');
+  $serverUrl = rtrim((string) $config->get('server_url'), '/');
+  $endpointToken = (string) $config->get('endpoint_token');
+
+  if ($serverUrl === '' || $endpointToken === '') {
+    return;
+  }
+
+  $payload = printbridge_build_receipt($order); // your own formatting function
+
+  try {
+    \Drupal::httpClient()->post($serverUrl . '/api/plugin/jobs', [
+      'headers' => [
+        'Authorization' => 'Bearer ' . $endpointToken,
+        'Content-Type' => 'text/plain',
+        'X-PrintBridge-Metadata' => json_encode([
+          'source' => 'drupal-commerce',
+          'order_id' => (string) $order->id(),
+        ]),
+      ],
+      'body' => $payload,
+      'timeout' => 10,
+    ]);
+  }
+  catch (\GuzzleHttp\Exception\GuzzleException $e) {
+    \Drupal::logger('printbridge')->error('Job submission failed for order @id: @message', [
+      '@id' => $order->id(),
+      '@message' => $e->getMessage(),
+    ]);
+  }
+}
+```
+
+Store `server_url` and `endpoint_token` in the module's config schema (`printbridge.settings.yml`) and expose them through a Drupal settings form, not in code.
+
+### TYPO3
+
+TYPO3 extensions built on TYPO3 v10+ should react to a PSR-14 event from the shop extension and use core's `RequestFactory` (TYPO3's Guzzle wrapper) plus `ExtensionConfiguration` for settings:
+
+```php
+<?php
+
+namespace Vendor\PrintbridgeConnector\EventListener;
+
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
+use TYPO3\CMS\Core\Http\RequestFactory;
+use Vendor\Shop\Event\OrderPlacedEvent;
+
+final class SubmitPrintJob
+{
+    public function __construct(
+        private readonly RequestFactory $requestFactory,
+        private readonly ExtensionConfiguration $extensionConfiguration
+    ) {
+    }
+
+    public function __invoke(OrderPlacedEvent $event): void
+    {
+        $config = $this->extensionConfiguration->get('printbridge_connector');
+        $serverUrl = rtrim((string) ($config['serverUrl'] ?? ''), '/');
+        $endpointToken = (string) ($config['endpointToken'] ?? '');
+
+        if ($serverUrl === '' || $endpointToken === '') {
+            return;
+        }
+
+        $order = $event->getOrder();
+        $payload = $this->buildReceipt($order); // your own formatting method
+
+        try {
+            $this->requestFactory->request($serverUrl . '/api/plugin/jobs', 'POST', [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $endpointToken,
+                    'Content-Type' => 'text/plain',
+                    'X-PrintBridge-Metadata' => json_encode([
+                        'source' => 'typo3',
+                        'order_id' => (string) $order->getUid(),
+                    ]),
+                ],
+                'body' => $payload,
+                'timeout' => 10,
+            ]);
+        } catch (\Throwable $e) {
+            // Log via TYPO3's core logger ($this->logger if LoggerAwareTrait is used).
+        }
+    }
+}
+```
+
+Register the listener in `Configuration/Services.yaml` tagged with the shop extension's event class, and expose `serverUrl` / `endpointToken` through the extension's `ext_conf_template.txt` so they are editable from the TYPO3 backend's Extension Configuration screen.
+
+### Pure PHP (No Framework)
+
+For a custom shop, ERP, or a system like Dolibarr that doesn't need a full plugin scaffold, a single dependency-free function is enough. This only requires the `curl` extension:
+
+```php
+<?php
+
+declare(strict_types=1);
+
+function printbridge_submit_job(
+    string $serverUrl,
+    string $endpointToken,
+    string $payload,
+    string $contentType = 'text/plain',
+    array $metadata = []
+): int {
+    $headers = [
+        'Authorization: Bearer ' . $endpointToken,
+        'Content-Type: ' . $contentType,
+    ];
+
+    if ($metadata !== []) {
+        $headers[] = 'X-PrintBridge-Metadata: ' . json_encode($metadata);
+    }
+
+    $ch = curl_init(rtrim($serverUrl, '/') . '/api/plugin/jobs');
+    curl_setopt_array($ch, [
+        CURLOPT_POST => true,
+        CURLOPT_POSTFIELDS => $payload,
+        CURLOPT_HTTPHEADER => $headers,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_TIMEOUT => 10,
+        CURLOPT_SSL_VERIFYPEER => true,
+    ]);
+
+    $body = curl_exec($ch);
+    $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $error = curl_error($ch);
+    curl_close($ch);
+
+    if ($body === false) {
+        throw new RuntimeException('PrintBridge request failed: ' . $error);
+    }
+
+    if ($status !== 201) {
+        throw new RuntimeException('PrintBridge rejected the job: HTTP ' . $status . ' ' . $body);
+    }
+
+    $decoded = json_decode($body, true);
+
+    return (int) $decoded['job_id'];
+}
+
+// Usage, e.g. from a Dolibarr trigger, a legacy cart, or any plain PHP script:
+$jobId = printbridge_submit_job(
+    'https://printbridge.example.com',
+    'ENDPOINT_TOKEN',
+    "Order #5001\n2x Widget\nTotal: \$19.98\n",
+    'text/plain',
+    ['source' => 'custom-cart', 'order_id' => '5001']
+);
+```
+
+Wrap the settings (`server_url`, `endpoint_token`) in whatever configuration mechanism the host system already uses — a database table, an `.env` file, or a config array — rather than hardcoding them.
+
 ### Any Other Platform (Language-Agnostic)
 
 If the host application is not PHP-based, the integration is the same three steps in any language: build the payload, set the `Authorization` header, POST the raw bytes.
