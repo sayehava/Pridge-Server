@@ -162,6 +162,7 @@ Client routes:
 
 - `POST /api/client/auth` authenticates a client token and returns a temporary bearer token.
 - `GET /api/client/jobs` lists assigned jobs and recent status.
+- `GET /api/client/endpoints` lists virtual printer endpoints assigned to the authenticated client.
 - `POST /api/client/jobs/reserve` reserves the next pending job and returns `payload_base64`.
 - `POST /api/client/jobs/{id}/printing` marks a job as printing.
 - `POST /api/client/jobs/{id}/printed` confirms successful printing.

@@ -116,6 +116,31 @@ Use the temporary token for the remaining client API calls:
 Authorization: Bearer TEMPORARY_SESSION_TOKEN
 ```
 
+## Client: List Assigned Endpoints
+
+Request:
+
+```http
+GET /api/client/endpoints
+Authorization: Bearer TEMPORARY_SESSION_TOKEN
+```
+
+Response:
+
+```json
+{
+  "endpoints": [
+    {
+      "id": 1,
+      "name": "Receipt Printer",
+      "enabled": true
+    }
+  ]
+}
+```
+
+This route lists every virtual printer endpoint assigned to the authenticated client, including endpoints without queued jobs.
+
 ## Client: List Jobs
 
 Request:
