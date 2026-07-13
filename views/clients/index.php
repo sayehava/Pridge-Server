@@ -66,10 +66,14 @@ $title = Text::get('clients.title');
                                 <button class="button button-secondary" type="submit"><?= View::e(Text::get('action.rename')) ?></button>
                             </form>
                         </td>
-                        <td><?= ((int) $client['enabled'] === 1) ? View::e(Text::get('status.enabled')) : View::e(Text::get('status.disabled')) ?></td>
+                        <td>
+                            <span class="badge <?= ((int) $client['enabled'] === 1) ? 'badge-enabled' : 'badge-disabled' ?>">
+                                <?= ((int) $client['enabled'] === 1) ? View::e(Text::get('status.enabled')) : View::e(Text::get('status.disabled')) ?>
+                            </span>
+                        </td>
                         <td><?= View::e((string) ($client['endpoint_names'] ?? '')) ?></td>
                         <td><?= View::e((string) $client['created_at']) ?></td>
-                        <td>
+                        <td class="actions-cell">
                             <form class="table-action" method="post" action="/clients/<?= (int) $client['id'] ?>/toggle">
                                 <button class="button button-secondary" type="submit">
                                     <?= ((int) $client['enabled'] === 1) ? View::e(Text::get('action.disable')) : View::e(Text::get('action.enable')) ?>

@@ -58,7 +58,11 @@ $title = Text::get('endpoints.title');
                                 <button class="button button-secondary" type="submit"><?= View::e(Text::get('action.rename')) ?></button>
                             </form>
                         </td>
-                        <td><?= ((int) $endpoint['enabled'] === 1) ? View::e(Text::get('status.enabled')) : View::e(Text::get('status.disabled')) ?></td>
+                        <td>
+                            <span class="badge <?= ((int) $endpoint['enabled'] === 1) ? 'badge-enabled' : 'badge-disabled' ?>">
+                                <?= ((int) $endpoint['enabled'] === 1) ? View::e(Text::get('status.enabled')) : View::e(Text::get('status.disabled')) ?>
+                            </span>
+                        </td>
                         <td>
                             <form method="post" action="/endpoints/<?= (int) $endpoint['id'] ?>/clients" class="assignment-form">
                                 <label>
@@ -78,7 +82,7 @@ $title = Text::get('endpoints.title');
                             </form>
                         </td>
                         <td><?= View::e((string) $endpoint['created_at']) ?></td>
-                        <td>
+                        <td class="actions-cell">
                             <form class="table-action" method="post" action="/endpoints/<?= (int) $endpoint['id'] ?>/toggle">
                                 <button class="button button-secondary" type="submit">
                                     <?= ((int) $endpoint['enabled'] === 1) ? View::e(Text::get('action.disable')) : View::e(Text::get('action.enable')) ?>

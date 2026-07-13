@@ -36,7 +36,7 @@ $title = Text::get('queue.title');
                 <?php foreach ($jobs as $job): ?>
                     <tr>
                         <td><?= (int) $job['id'] ?></td>
-                        <td><span class="badge"><?= View::e((string) $job['status']) ?></span></td>
+                        <td><span class="badge badge-<?= View::e((string) $job['status']) ?>"><?= View::e((string) $job['status']) ?></span></td>
                         <td><?= View::e((string) $job['endpoint_name']) ?></td>
                         <td><?= View::e((string) ($job['assigned_client_names'] ?? '')) ?></td>
                         <td><?= View::e((string) ($job['reserved_client_name'] ?? '')) ?></td>
@@ -44,7 +44,7 @@ $title = Text::get('queue.title');
                         <td><?= View::e((string) $job['created_at']) ?></td>
                         <td><?= View::e((string) ($job['completed_at'] ?? '')) ?></td>
                         <td><?= View::e((string) ($job['failed_at'] ?? '')) ?></td>
-                        <td>
+                        <td class="actions-cell">
                             <form class="table-action" method="post" action="/queue/<?= (int) $job['id'] ?>/delete" onsubmit="return confirm('Force delete this job? This cannot be undone.');">
                                 <button class="button button-danger" type="submit"><?= View::e(Text::get('action.delete')) ?></button>
                             </form>
