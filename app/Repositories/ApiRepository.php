@@ -140,15 +140,42 @@ final class ApiRepository
     public static function listEndpointsForClient(int $clientId): array
     {
         $stmt = Database::connection()->prepare(
-            'SELECT e.id, e.name, e.enabled
+            'SELECT e.id, e.name, e.enabled,
+                CASE WHEN cea.client_id IS NULL THEN 0 ELSE 1 END AS assigned
              FROM endpoints e
-             INNER JOIN client_endpoint_assignments cea ON cea.endpoint_id = e.id
-             WHERE cea.client_id = :client_id
+             LEFT JOIN client_endpoint_assignments cea
+                ON cea.endpoint_id = e.id AND cea.client_id = :client_id
              ORDER BY e.name ASC, e.id ASC'
         );
         $stmt->execute([':client_id' => $clientId]);
 
         return $stmt->fetchAll();
+    }
+
+    /**
+     * @param array<int, int> $endpointIds
+     */
+    public static function syncEndpointsForClient(int $clientId, array $endpointIds): void
+    {
+        $db = Database::connection();
+        $db->beginTransaction();
+
+        $delete = $db->prepare('DELETE FROM client_endpoint_assignments WHERE client_id = :client_id');
+        $delete->execute([':client_id' => $clientId]);
+
+        $insert = $db->prepare(
+            'INSERT OR IGNORE INTO client_endpoint_assignments (client_id, endpoint_id, created_at)
+             SELECT :client_id, id, :created_at FROM endpoints WHERE id = :endpoint_id'
+        );
+        foreach (array_unique($endpointIds) as $endpointId) {
+            $insert->execute([
+                ':client_id' => $clientId,
+                ':endpoint_id' => $endpointId,
+                ':created_at' => Clock::now(),
+            ]);
+        }
+
+        $db->commit();
     }
 
     /**

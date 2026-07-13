@@ -170,6 +170,11 @@ if ($path === '/api/client/endpoints' && $method === 'GET') {
     exit;
 }
 
+if ($path === '/api/client/endpoints' && $method === 'PUT') {
+    \PrintBridge\Controllers\ApiController::syncClientEndpoints();
+    exit;
+}
+
 if ($path === '/api/client/jobs/reserve' && $method === 'POST') {
     \PrintBridge\Controllers\ApiController::reserveClientJob();
     exit;

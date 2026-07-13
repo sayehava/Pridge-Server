@@ -106,10 +106,41 @@ final class ApiController
                 'id' => (int) $endpoint['id'],
                 'name' => (string) $endpoint['name'],
                 'enabled' => (bool) $endpoint['enabled'],
+                'assigned' => (bool) $endpoint['assigned'],
             ];
         }
 
         Http::json(['endpoints' => $endpoints]);
+    }
+
+    public static function syncClientEndpoints(): void
+    {
+        $client = self::clientFromBearer();
+
+        if ($client === null) {
+            Http::json(['error' => 'Invalid client session.'], 401);
+            return;
+        }
+
+        $input = Http::jsonInput();
+        $rawEndpointIds = $input['endpoint_ids'] ?? null;
+        if (!is_array($rawEndpointIds)) {
+            Http::json(['error' => 'endpoint_ids must be an array.'], 400);
+            return;
+        }
+
+        $endpointIds = [];
+        foreach ($rawEndpointIds as $endpointId) {
+            if (is_int($endpointId) || (is_string($endpointId) && ctype_digit($endpointId))) {
+                $parsed = (int) $endpointId;
+                if ($parsed > 0) {
+                    $endpointIds[] = $parsed;
+                }
+            }
+        }
+
+        ApiRepository::syncEndpointsForClient((int) $client['id'], $endpointIds);
+        self::listClientEndpoints();
     }
 
     public static function reserveClientJob(): void
