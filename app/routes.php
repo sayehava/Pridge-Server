@@ -140,6 +140,16 @@ if ($path === '/queue' && $method === 'GET') {
     exit;
 }
 
+if (preg_match('#^/queue/(\d+)$#', $path, $matches) && $method === 'GET') {
+    \PrintBridge\Controllers\QueueController::show((int) $matches[1]);
+    exit;
+}
+
+if (preg_match('#^/queue/(\d+)/payload$#', $path, $matches) && $method === 'GET') {
+    \PrintBridge\Controllers\QueueController::payload((int) $matches[1]);
+    exit;
+}
+
 if (preg_match('#^/queue/(\d+)/delete$#', $path, $matches) && $method === 'POST') {
     \PrintBridge\Controllers\QueueController::delete((int) $matches[1]);
     exit;

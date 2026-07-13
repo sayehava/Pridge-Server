@@ -185,7 +185,9 @@ failed
 cancelled
 ```
 
-Printed jobs are removed from the waiting queue by status and remain available in history for admin review.
+Printed jobs are removed from the waiting queue by status, not deleted. The admin Queue page splits jobs into an active queue (pending, reserved, printing, failed) and an archive (printed, cancelled) for history review. Any job can be force-deleted from either view.
+
+Open a job to preview its payload: images and PDFs render inline, plain text renders as text, and unrecognized binary payloads (for example raw ESC/POS data) offer a download instead of a preview. Preview type is detected from the stored content type first and the payload's own bytes as a fallback, since connectors often submit everything as `application/octet-stream`.
 
 ## Backup Recommendations
 

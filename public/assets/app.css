@@ -379,6 +379,15 @@ button {
     margin: 0 0 16px;
 }
 
+.panel-help {
+    color: var(--muted);
+    margin: 0 0 16px;
+}
+
+.panel-actions {
+    margin: 16px 0 0;
+}
+
 .inline-form {
     align-items: end;
     display: grid;
@@ -409,6 +418,36 @@ code {
     display: block;
     overflow-x: auto;
     padding: 13px;
+}
+
+.preview-image {
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    display: block;
+    max-height: 70vh;
+    max-width: 100%;
+}
+
+.preview-pdf {
+    background: #ffffff;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    height: 70vh;
+    width: 100%;
+}
+
+.preview-text {
+    background: #06070d;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    color: var(--text);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 13px;
+    max-height: 480px;
+    overflow: auto;
+    padding: 16px;
+    white-space: pre-wrap;
+    word-break: break-word;
 }
 
 .table-wrap {
