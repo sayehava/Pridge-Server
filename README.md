@@ -208,6 +208,8 @@ Licensed under the GNU Affero General Public License v3.0 (AGPL-3.0). See [LICEN
 
 The AGPL is a copyleft license: if you run a modified version of this software as a network service, you must make the modified source available to its users, and you must retain the original copyright notice. This applies even if you never distribute the software itself, only run it as a hosted service.
 
+---
+
 ### ❤️ Support Development
 
 ☕ **Buy Me a Coffee**  
