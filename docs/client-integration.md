@@ -133,13 +133,28 @@ Response:
     {
       "id": 1,
       "name": "Receipt Printer",
-      "enabled": true
+      "enabled": true,
+      "assigned": false
     }
   ]
 }
 ```
 
-This route lists every virtual printer endpoint assigned to the authenticated client, including endpoints without queued jobs.
+This route lists every virtual printer endpoint, including endpoints without queued jobs. Each item includes an `assigned` boolean for the authenticated client.
+
+## Client: Synchronize Endpoint Assignments
+
+Request:
+
+```http
+PUT /api/client/endpoints
+Authorization: Bearer TEMPORARY_SESSION_TOKEN
+Content-Type: application/json
+
+{"endpoint_ids":[1,2]}
+```
+
+The supplied IDs replace the authenticated client's current endpoint assignments. An empty array disables every endpoint for that client. The response uses the same payload as `GET /api/client/endpoints`.
 
 ## Client: List Jobs
 
