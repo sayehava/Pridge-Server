@@ -100,7 +100,16 @@ final class ApiController
             return;
         }
 
-        Http::json(['endpoints' => ApiRepository::listEndpointsForClient((int) $client['id'])]);
+        $endpoints = [];
+        foreach (ApiRepository::listEndpointsForClient((int) $client['id']) as $endpoint) {
+            $endpoints[] = [
+                'id' => (int) $endpoint['id'],
+                'name' => (string) $endpoint['name'],
+                'enabled' => (bool) $endpoint['enabled'],
+            ];
+        }
+
+        Http::json(['endpoints' => $endpoints]);
     }
 
     public static function reserveClientJob(): void
