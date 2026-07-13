@@ -121,6 +121,8 @@ RAW_PRINT_PAYLOAD
 
 The server stores the raw request body as the print payload.
 
+Building a plugin for WordPress, Joomla, PrestaShop, or another platform to submit jobs automatically? See [`docs/module-development.md`](docs/module-development.md).
+
 ## Client Authentication
 
 Create clients in the admin UI at:
@@ -151,6 +153,7 @@ More detailed integration instructions are available in:
 ```text
 docs/client-integration.md
 docs/endpoint-agent-development.md
+docs/module-development.md
 ```
 
 Plugin route:
