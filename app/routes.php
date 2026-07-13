@@ -110,6 +110,16 @@ if (preg_match('#^/clients/(\d+)/toggle$#', $path, $matches) && $method === 'POS
     exit;
 }
 
+if (preg_match('#^/clients/(\d+)/rename$#', $path, $matches) && $method === 'POST') {
+    \PrintBridge\Controllers\ClientController::rename((int) $matches[1]);
+    exit;
+}
+
+if (preg_match('#^/clients/(\d+)/regenerate$#', $path, $matches) && $method === 'POST') {
+    \PrintBridge\Controllers\ClientController::regenerateToken((int) $matches[1]);
+    exit;
+}
+
 if (preg_match('#^/clients/(\d+)/delete$#', $path, $matches) && $method === 'POST') {
     \PrintBridge\Controllers\ClientController::delete((int) $matches[1]);
     exit;

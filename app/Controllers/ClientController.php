@@ -20,6 +20,7 @@ final class ClientController
             'clients' => ClientRepository::all(),
             'endpoints' => EndpointRepository::all(),
             'token' => Flash::pull('client_token'),
+            'tokenMessage' => Flash::pull('client_token_message') ?? 'clients.token_created',
             'error' => Flash::pull('error'),
         ]);
     }
@@ -45,6 +46,29 @@ final class ClientController
     {
         AdminAuth::requireLogin();
         ClientRepository::toggle($id);
+        Http::redirect('/clients');
+    }
+
+    public static function rename(int $id): void
+    {
+        AdminAuth::requireLogin();
+        $name = Http::post('name');
+
+        if ($name === '') {
+            Flash::set('error', 'error.name_required');
+            Http::redirect('/clients');
+            return;
+        }
+
+        ClientRepository::rename($id, $name);
+        Http::redirect('/clients');
+    }
+
+    public static function regenerateToken(int $id): void
+    {
+        AdminAuth::requireLogin();
+        Flash::set('client_token', ClientRepository::regenerateToken($id));
+        Flash::set('client_token_message', 'clients.token_regenerated');
         Http::redirect('/clients');
     }
 

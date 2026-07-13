@@ -74,6 +74,32 @@ final class ClientRepository
         $stmt->execute([':id' => $id, ':updated_at' => Clock::now()]);
     }
 
+    public static function rename(int $id, string $name): void
+    {
+        $stmt = Database::connection()->prepare(
+            'UPDATE clients SET name = :name, updated_at = :updated_at WHERE id = :id'
+        );
+        $stmt->execute([':id' => $id, ':name' => $name, ':updated_at' => Clock::now()]);
+    }
+
+    public static function regenerateToken(int $id): string
+    {
+        $db = Database::connection();
+        $token = Security::randomToken();
+
+        $db->beginTransaction();
+        $stmt = $db->prepare(
+            'UPDATE clients SET token_hash = :token_hash, updated_at = :updated_at WHERE id = :id'
+        );
+        $stmt->execute([':id' => $id, ':token_hash' => Security::hashToken($token), ':updated_at' => Clock::now()]);
+
+        $sessions = $db->prepare('DELETE FROM client_sessions WHERE client_id = :id');
+        $sessions->execute([':id' => $id]);
+        $db->commit();
+
+        return $token;
+    }
+
     public static function delete(int $id): bool
     {
         $stmt = Database::connection()->prepare('DELETE FROM clients WHERE id = :id');

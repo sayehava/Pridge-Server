@@ -53,6 +53,7 @@ final class Text
         'clients.subtitle' => 'Office applications that can pull and report print jobs',
         'clients.create' => 'Create client',
         'clients.token_created' => 'Client token created. Store it now because it will not be shown again.',
+        'clients.token_regenerated' => 'Client token regenerated. Store it now because it will not be shown again. The old token and any active sessions no longer work.',
         'queue.title' => 'Queue',
         'queue.subtitle' => 'Waiting jobs, reserved jobs, and print history',
         'settings.title' => 'Settings',
