@@ -16,7 +16,7 @@ if (!empty($job['metadata_json']) && is_string($job['metadata_json'])) {
         <h1><?= View::e(Text::get('queue.job_title')) ?> #<?= (int) $job['id'] ?></h1>
         <p><?= View::e((string) $job['endpoint_name']) ?></p>
     </div>
-    <a class="button button-secondary" href="/queue"><?= View::e(Text::get('action.back_to_queue')) ?></a>
+    <a class="button button-secondary" href="<?= $isArchived ? '/archive' : '/queue' ?>"><?= View::e(Text::get($isArchived ? 'action.back_to_archive' : 'action.back_to_queue')) ?></a>
 </section>
 
 <section class="panel">

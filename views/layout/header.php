@@ -24,6 +24,7 @@ $isLoggedIn = AdminAuth::userId() !== null;
             <a href="/endpoints"><?= View::e(Text::get('nav.endpoints')) ?></a>
             <a href="/clients"><?= View::e(Text::get('nav.clients')) ?></a>
             <a href="/queue"><?= View::e(Text::get('nav.queue')) ?></a>
+            <a href="/archive"><?= View::e(Text::get('nav.archive')) ?></a>
             <a href="/settings"><?= View::e(Text::get('nav.settings')) ?></a>
         </nav>
         <form method="post" action="/logout">

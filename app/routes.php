@@ -140,6 +140,11 @@ if ($path === '/queue' && $method === 'GET') {
     exit;
 }
 
+if ($path === '/archive' && $method === 'GET') {
+    \PrintBridge\Controllers\QueueController::archive();
+    exit;
+}
+
 if (preg_match('#^/queue/(\d+)$#', $path, $matches) && $method === 'GET') {
     \PrintBridge\Controllers\QueueController::show((int) $matches[1]);
     exit;

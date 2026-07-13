@@ -12,13 +12,18 @@ use PrintBridge\Support\View;
 
 final class QueueController
 {
+    private const ARCHIVED_STATUSES = ['printed', 'cancelled'];
+
     public static function index(): void
     {
         AdminAuth::requireLogin();
-        View::render('queue/index', [
-            'waiting' => QueueRepository::waiting(),
-            'archived' => QueueRepository::archived(),
-        ]);
+        View::render('queue/index', ['jobs' => QueueRepository::waiting()]);
+    }
+
+    public static function archive(): void
+    {
+        AdminAuth::requireLogin();
+        View::render('queue/archive', ['jobs' => QueueRepository::archived()]);
     }
 
     public static function show(int $id): void
@@ -46,6 +51,7 @@ final class QueueController
             'preview' => $preview,
             'previewText' => $previewText,
             'previewTruncated' => $previewTruncated,
+            'isArchived' => in_array($job['status'], self::ARCHIVED_STATUSES, true),
         ]);
     }
 
@@ -74,7 +80,10 @@ final class QueueController
     public static function delete(int $id): void
     {
         AdminAuth::requireLogin();
+        $status = QueueRepository::statusOf($id);
+        $isArchived = $status !== null && in_array($status, self::ARCHIVED_STATUSES, true);
+
         QueueRepository::delete($id);
-        Http::redirect('/queue');
+        Http::redirect($isArchived ? '/archive' : '/queue');
     }
 }

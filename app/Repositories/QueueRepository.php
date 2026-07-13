@@ -53,6 +53,15 @@ final class QueueRepository
         return is_array($job) ? $job : null;
     }
 
+    public static function statusOf(int $id): ?string
+    {
+        $stmt = Database::connection()->prepare('SELECT status FROM print_jobs WHERE id = :id');
+        $stmt->execute([':id' => $id]);
+        $status = $stmt->fetchColumn();
+
+        return is_string($status) ? $status : null;
+    }
+
     public static function delete(int $id): bool
     {
         $stmt = Database::connection()->prepare('DELETE FROM print_jobs WHERE id = :id');
