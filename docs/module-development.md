@@ -2,7 +2,7 @@
 
 This guide explains how to build a source-side integration module — a plugin for WordPress, Joomla, PrestaShop, Magento, OpenCart, a custom ERP, or any other system — that submits print jobs into PrintBridge Server. This is the same role played by an official "PrintBridge for WooCommerce" or "PrintBridge for Joomla" plugin would play: it watches for an event (a new order, an invoice, a label request) inside the host application and forwards the raw print data to a PrintBridge endpoint.
 
-If you are building the desktop application that pulls jobs and sends them to a physical printer, see [`endpoint-agent-development.md`](endpoint-agent-development.md) instead. This guide is about the other side: getting print jobs *into* PrintBridge from a CMS, e-commerce platform, or any other application.
+If you are building the desktop application that pulls jobs and sends them to a physical printer, see [`client-agent-development.md`](client-agent-development.md) instead. This guide is about the other side: getting print jobs *into* PrintBridge from a CMS, e-commerce platform, or any other application.
 
 ## Terminology
 
@@ -323,7 +323,7 @@ Never let a PrintBridge outage break checkout or order processing in the host ap
 2. Confirm the job appears in the PrintBridge admin queue at `/queue` with status `pending`.
 3. Open the job to preview the payload and confirm it rendered or downloaded as expected.
 4. Test the failure paths: an invalid token should produce a `401` and a clear module-side error; an empty payload should produce a `400`.
-5. Run a client agent (see [`endpoint-agent-development.md`](endpoint-agent-development.md)) against a test endpoint and confirm the job reaches `printed`.
+5. Run a client agent (see [`client-agent-development.md`](client-agent-development.md)) against a test endpoint and confirm the job reaches `printed`.
 
 You can also test the raw API without your module using curl, before wiring up the host application:
 

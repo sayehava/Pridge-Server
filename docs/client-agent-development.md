@@ -1,16 +1,18 @@
-# Endpoint Agent Development Guide
+# Client Agent Development Guide
 
-This guide describes how to build an endpoint-side application that works with PrintBridge Server.
+This guide describes how to build a client-side application that works with PrintBridge Server.
 
-The endpoint agent is a local desktop or tray application that stays running on the office computer. It discovers local printers, shows a simple GUI, pulls print jobs from PrintBridge Server, and sends the raw job payload to a selected local printer.
+The client agent is a local desktop or tray application that stays running on the office computer. It discovers local printers, shows a simple GUI, pulls print jobs from PrintBridge Server, and sends the raw job payload to a selected local printer.
 
-The server remains PHP and SQLite for shared hosting. The endpoint agent can be written in Python for the first fast version and rewritten later in another language.
+The server remains PHP and SQLite for shared hosting. The client agent can be written in Python for the first fast version and rewritten later in another language.
+
+If you are building the plugin/module that submits print jobs from a CMS or e-commerce platform (WordPress, Joomla, PrestaShop, and so on), see [`module-development.md`](module-development.md) instead. This guide is about the other side: pulling jobs out of PrintBridge and printing them.
 
 ## Responsibilities
 
-The endpoint agent should:
+The client agent should:
 
-- Stay live on the endpoint computer.
+- Stay live on the client computer.
 - Start automatically with the operating system when possible.
 - Store server URL and client token locally.
 - Authenticate with PrintBridge Server using the client token.
@@ -36,11 +38,11 @@ Suggested libraries:
 - Linux: `pycups` for CUPS printer discovery and printing.
 - macOS: shell out to `lpstat` and `lp`, or use a native printing bridge later.
 
-Avoid adding this Python agent to the PHP shared-hosting server runtime. Treat it as a separate endpoint-side app.
+Avoid adding this Python agent to the PHP shared-hosting server runtime. Treat it as a separate client-side app.
 
 ## Local Configuration
 
-The endpoint agent needs these settings:
+The client agent needs these settings:
 
 ```text
 server_url=https://printbridge.example.com
@@ -71,7 +73,7 @@ The GUI should not be required for printing once configured. The background work
 
 ## Discover Local Printers
 
-The endpoint agent should show all installed local printers.
+The client agent should show all installed local printers.
 
 Windows example direction:
 
@@ -223,7 +225,7 @@ Content-Type: application/json
 
 The server returns the print payload as base64 because JSON cannot safely carry arbitrary binary bytes.
 
-The endpoint agent must:
+The client agent must:
 
 1. Base64-decode `payload_base64`.
 2. Send the decoded bytes to the printer without changing them.
@@ -281,7 +283,7 @@ def send_raw_to_printer(printer_name, payload):
 
 ## Failure Handling
 
-The endpoint agent should report failure when:
+The client agent should report failure when:
 
 - No default printer is selected.
 - The selected printer is no longer installed.
@@ -316,7 +318,7 @@ For a quick Python build:
 - Linux: provide a systemd user service or desktop autostart entry.
 - macOS: package later as a signed app if needed.
 
-The app should support auto-start because it must stay live on the endpoint side.
+The app should support auto-start because it must stay live on the client side.
 
 ## Minimal Worker Pseudocode
 
