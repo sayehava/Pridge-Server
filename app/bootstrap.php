@@ -5,6 +5,7 @@ declare(strict_types=1);
 const PRINTBRIDGE_ROOT = __DIR__ . '/..';
 const PRINTBRIDGE_STORAGE = PRINTBRIDGE_ROOT . '/storage';
 const PRINTBRIDGE_DATABASE = PRINTBRIDGE_STORAGE . '/database/printbridge.sqlite';
+const PRINTBRIDGE_VERSION = '1.0.0';
 
 date_default_timezone_set('UTC');
 

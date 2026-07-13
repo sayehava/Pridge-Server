@@ -199,3 +199,11 @@ storage/
 ```
 
 Stop write traffic before copying the SQLite file when possible. At minimum, keep timestamped backups and test restoration on a separate installation.
+
+## License
+
+Copyright (C) 2026 Sayeh Ava Pazouki
+
+Licensed under the GNU Affero General Public License v3.0 (AGPL-3.0). See [LICENSE](LICENSE) for the full text.
+
+The AGPL is a copyleft license: if you run a modified version of this software as a network service, you must make the modified source available to its users, and you must retain the original copyright notice. This applies even if you never distribute the software itself, only run it as a hosted service.

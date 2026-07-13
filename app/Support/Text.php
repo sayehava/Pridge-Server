@@ -9,6 +9,14 @@ final class Text
     /** @var array<string, string> */
     private const STRINGS = [
         'app.name' => 'PrintBridge Server',
+        'about.open' => 'About PrintBridge Server',
+        'about.description' => 'A plain PHP and SQLite print job broker for shared hosting. It receives print jobs from plugins, queues them, and lets office clients pull and print them.',
+        'about.version' => 'Version',
+        'about.author' => 'Author',
+        'about.license' => 'License',
+        'about.license_name' => 'GNU Affero General Public License v3.0 (AGPL-3.0)',
+        'about.license_note' => 'This is free software: you may run, study, and modify it. If you run a modified version as a network service, you must make your changes available to its users and keep this attribution.',
+        'action.close' => 'Close',
         'nav.dashboard' => 'Dashboard',
         'nav.endpoints' => 'Endpoints',
         'nav.clients' => 'Clients',

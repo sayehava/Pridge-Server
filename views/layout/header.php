@@ -17,7 +17,9 @@ $isLoggedIn = AdminAuth::userId() !== null;
 </head>
 <body>
 <header class="topbar">
-    <a class="brand" href="/"><?= View::e(Text::get('app.name')) ?></a>
+    <button type="button" class="brand" onclick="document.getElementById('about-modal').showModal()" aria-haspopup="dialog" title="<?= View::e(Text::get('about.open')) ?>">
+        <img src="/assets/logo.png" alt="<?= View::e(Text::get('app.name')) ?>">
+    </button>
     <?php if ($isLoggedIn): ?>
         <nav class="nav">
             <a href="/"><?= View::e(Text::get('nav.dashboard')) ?></a>
@@ -32,4 +34,32 @@ $isLoggedIn = AdminAuth::userId() !== null;
         </form>
     <?php endif; ?>
 </header>
+
+<dialog id="about-modal" class="about-modal" aria-labelledby="about-modal-title">
+    <img class="about-hero" src="/assets/hero.png" alt="">
+    <div class="about-body">
+        <div class="about-heading">
+            <h2 class="about-brand" id="about-modal-title"><?= View::e(Text::get('app.name')) ?></h2>
+            <button type="button" class="about-close" onclick="document.getElementById('about-modal').close()" aria-label="<?= View::e(Text::get('action.close')) ?>">&times;</button>
+        </div>
+        <p class="about-description"><?= View::e(Text::get('about.description')) ?></p>
+        <dl class="definition-list">
+            <dt><?= View::e(Text::get('about.version')) ?></dt>
+            <dd><?= View::e(PRINTBRIDGE_VERSION) ?></dd>
+            <dt><?= View::e(Text::get('about.author')) ?></dt>
+            <dd>Sayeh Ava Pazouki</dd>
+            <dt><?= View::e(Text::get('about.license')) ?></dt>
+            <dd><?= View::e(Text::get('about.license_name')) ?></dd>
+        </dl>
+        <p class="about-license-note"><?= View::e(Text::get('about.license_note')) ?></p>
+    </div>
+</dialog>
+<script>
+    document.getElementById('about-modal').addEventListener('click', function (event) {
+        if (event.target === this) {
+            this.close();
+        }
+    });
+</script>
+
 <main class="page">

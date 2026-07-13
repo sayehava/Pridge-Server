@@ -107,15 +107,19 @@ a {
 }
 
 .brand {
-    background: linear-gradient(120deg, #ffffff, var(--accent) 60%, var(--accent-2));
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    font-size: 18px;
-    font-weight: 800;
-    letter-spacing: .2px;
-    text-decoration: none;
-    white-space: nowrap;
+    align-items: center;
+    background: none;
+    border: 0;
+    cursor: pointer;
+    display: inline-flex;
+    flex-shrink: 0;
+    padding: 4px;
+}
+
+.brand img {
+    display: block;
+    height: 34px;
+    width: auto;
 }
 
 .nav {
@@ -611,6 +615,95 @@ tbody tr:last-child td {
 
 .auth-link a:hover {
     text-decoration: underline;
+}
+
+.about-modal {
+    animation: fadeUp .3s ease both;
+    background: var(--panel-solid);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 30px 80px rgba(0, 0, 0, .6);
+    color: var(--text);
+    margin: auto;
+    max-width: 440px;
+    overflow: hidden;
+    padding: 0;
+    width: min(92vw, 440px);
+}
+
+.about-modal::backdrop {
+    background: rgba(5, 6, 12, .72);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+}
+
+.about-hero {
+    display: block;
+    height: 160px;
+    object-fit: cover;
+    width: 100%;
+}
+
+.about-body {
+    display: grid;
+    gap: 16px;
+    padding: 24px 26px 26px;
+}
+
+.about-heading {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.about-brand {
+    background: linear-gradient(120deg, #ffffff, var(--accent) 60%, var(--accent-2));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: .2px;
+    margin: 0;
+}
+
+.about-close {
+    align-items: center;
+    background: rgba(255, 255, 255, .06);
+    border: 0;
+    border-radius: 999px;
+    color: var(--muted);
+    cursor: pointer;
+    display: inline-flex;
+    flex-shrink: 0;
+    font-size: 20px;
+    height: 32px;
+    justify-content: center;
+    line-height: 1;
+    transition: background .15s ease, color .15s ease;
+    width: 32px;
+}
+
+.about-close:hover {
+    background: var(--panel-hover);
+    color: var(--text);
+}
+
+.about-description {
+    color: var(--muted);
+    margin: 0;
+}
+
+.about-license-note {
+    background: rgba(255, 255, 255, .03);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.5;
+    margin: 0;
+    padding: 12px 14px;
 }
 
 @media (max-width: 760px) {
