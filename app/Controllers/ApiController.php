@@ -91,6 +91,18 @@ final class ApiController
         Http::json(['jobs' => ApiRepository::listJobsForClient((int) $client['id'])]);
     }
 
+    public static function listClientEndpoints(): void
+    {
+        $client = self::clientFromBearer();
+
+        if ($client === null) {
+            Http::json(['error' => 'Invalid client session.'], 401);
+            return;
+        }
+
+        Http::json(['endpoints' => ApiRepository::listEndpointsForClient((int) $client['id'])]);
+    }
+
     public static function reserveClientJob(): void
     {
         $client = self::clientFromBearer();

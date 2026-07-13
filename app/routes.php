@@ -140,6 +140,11 @@ if ($path === '/api/client/jobs' && $method === 'GET') {
     exit;
 }
 
+if ($path === '/api/client/endpoints' && $method === 'GET') {
+    \PrintBridge\Controllers\ApiController::listClientEndpoints();
+    exit;
+}
+
 if ($path === '/api/client/jobs/reserve' && $method === 'POST') {
     \PrintBridge\Controllers\ApiController::reserveClientJob();
     exit;

@@ -135,6 +135,23 @@ final class ApiRepository
     }
 
     /**
+     * @return array<int, array<string, mixed>>
+     */
+    public static function listEndpointsForClient(int $clientId): array
+    {
+        $stmt = Database::connection()->prepare(
+            'SELECT e.id, e.name, e.enabled
+             FROM endpoints e
+             INNER JOIN client_endpoint_assignments cea ON cea.endpoint_id = e.id
+             WHERE cea.client_id = :client_id
+             ORDER BY e.name ASC, e.id ASC'
+        );
+        $stmt->execute([':client_id' => $clientId]);
+
+        return $stmt->fetchAll();
+    }
+
+    /**
      * @return array<string, mixed>|null
      */
     public static function reserveJobForClient(int $clientId, int $timeoutSeconds = 300): ?array
