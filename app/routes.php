@@ -140,6 +140,11 @@ if ($path === '/queue' && $method === 'GET') {
     exit;
 }
 
+if (preg_match('#^/queue/(\d+)/delete$#', $path, $matches) && $method === 'POST') {
+    \PrintBridge\Controllers\QueueController::delete((int) $matches[1]);
+    exit;
+}
+
 if ($path === '/settings' && $method === 'GET') {
     \PrintBridge\Controllers\SettingsController::index();
     exit;

@@ -31,4 +31,12 @@ final class QueueRepository
 
         return $stmt->fetchAll();
     }
+
+    public static function delete(int $id): bool
+    {
+        $stmt = Database::connection()->prepare('DELETE FROM print_jobs WHERE id = :id');
+        $stmt->execute([':id' => $id]);
+
+        return $stmt->rowCount() === 1;
+    }
 }
