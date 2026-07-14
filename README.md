@@ -207,9 +207,11 @@ Stop write traffic before copying the SQLite file when possible. At minimum, kee
 
 Copyright (C) 2026 Sayeh Ava Pazouki
 
-Licensed under the GNU Affero General Public License v3.0 (AGPL-3.0). See [LICENSE](LICENSE) for the full text.
+Licensed under the GNU General Public License v3.0 or later (GPL-3.0-or-later). See [LICENSE](LICENSE) for the full text.
 
-The AGPL is a copyleft license: if you run a modified version of this software as a network service, you must make the modified source available to its users, and you must retain the original copyright notice. This applies even if you never distribute the software itself, only run it as a hosted service.
+The GPL is a copyleft license: if you distribute a modified version of this software, you must make the modified source available under the same license, and you must retain the original copyright notice.
+
+This project adds one additional term under GPLv3 Section 7: modified or redistributed versions with an interactive user interface must keep a visible attribution notice (original author and copyright) in the application's About or Legal Notices section. This does not otherwise restrict the permissions granted by the GPL. See [ADDITIONAL_TERMS.md](ADDITIONAL_TERMS.md) for the full text.
 
 ---
 
