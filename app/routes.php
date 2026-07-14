@@ -160,6 +160,26 @@ if (preg_match('#^/queue/(\d+)/delete$#', $path, $matches) && $method === 'POST'
     exit;
 }
 
+if ($path === '/queue/delete-selected' && $method === 'POST') {
+    \PrintBridge\Controllers\QueueController::deleteSelectedWaiting();
+    exit;
+}
+
+if ($path === '/queue/delete-all' && $method === 'POST') {
+    \PrintBridge\Controllers\QueueController::deleteAllWaiting();
+    exit;
+}
+
+if ($path === '/archive/delete-selected' && $method === 'POST') {
+    \PrintBridge\Controllers\QueueController::deleteSelectedArchived();
+    exit;
+}
+
+if ($path === '/archive/delete-all' && $method === 'POST') {
+    \PrintBridge\Controllers\QueueController::deleteAllArchived();
+    exit;
+}
+
 if ($path === '/settings' && $method === 'GET') {
     \PrintBridge\Controllers\SettingsController::index();
     exit;
@@ -167,6 +187,11 @@ if ($path === '/settings' && $method === 'GET') {
 
 if ($path === '/settings/password' && $method === 'POST') {
     \PrintBridge\Controllers\SettingsController::changePassword();
+    exit;
+}
+
+if ($path === '/settings/archive-retention' && $method === 'POST') {
+    \PrintBridge\Controllers\SettingsController::updateArchiveRetention();
     exit;
 }
 

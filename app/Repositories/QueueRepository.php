@@ -8,6 +8,9 @@ use PrintBridge\Database;
 
 final class QueueRepository
 {
+    private const WAITING_STATUSES = "'pending', 'reserved', 'printing', 'failed'";
+    private const ARCHIVED_STATUSES = "'printed', 'cancelled'";
+
     private const LIST_COLUMNS = 'j.id, j.status, j.content_type, j.created_at, j.picked_up_at, j.completed_at, j.failed_at, j.last_error,
                 e.name AS endpoint_name, c.name AS reserved_client_name,
                 GROUP_CONCAT(assigned_clients.name, ", ") AS assigned_client_names';
@@ -21,17 +24,27 @@ final class QueueRepository
     /**
      * @return array<int, array<string, mixed>>
      */
-    public static function waiting(int $limit = 100): array
+    public static function waiting(?int $limit = null, int $offset = 0): array
     {
-        return self::listByStatus("j.status IN ('pending', 'reserved', 'printing', 'failed')", $limit);
+        return self::listByStatus('j.status IN (' . self::WAITING_STATUSES . ')', $limit, $offset);
     }
 
     /**
      * @return array<int, array<string, mixed>>
      */
-    public static function archived(int $limit = 100): array
+    public static function archived(?int $limit = null, int $offset = 0): array
     {
-        return self::listByStatus("j.status IN ('printed', 'cancelled')", $limit);
+        return self::listByStatus('j.status IN (' . self::ARCHIVED_STATUSES . ')', $limit, $offset);
+    }
+
+    public static function countWaiting(): int
+    {
+        return self::countByStatus(self::WAITING_STATUSES);
+    }
+
+    public static function countArchived(): int
+    {
+        return self::countByStatus(self::ARCHIVED_STATUSES);
     }
 
     /**
@@ -71,19 +84,86 @@ final class QueueRepository
     }
 
     /**
-     * @return array<int, array<string, mixed>>
+     * @param array<int, int> $ids
      */
-    private static function listByStatus(string $condition, int $limit): array
+    public static function deleteByIds(array $ids): int
+    {
+        $ids = array_values(array_unique(array_map('intval', $ids)));
+
+        if ($ids === []) {
+            return 0;
+        }
+
+        $placeholders = implode(',', array_fill(0, count($ids), '?'));
+        $stmt = Database::connection()->prepare('DELETE FROM print_jobs WHERE id IN (' . $placeholders . ')');
+        $stmt->execute($ids);
+
+        return $stmt->rowCount();
+    }
+
+    public static function deleteAllWaiting(): int
+    {
+        $stmt = Database::connection()->prepare('DELETE FROM print_jobs WHERE status IN (' . self::WAITING_STATUSES . ')');
+        $stmt->execute();
+
+        return $stmt->rowCount();
+    }
+
+    public static function deleteAllArchived(): int
+    {
+        $stmt = Database::connection()->prepare('DELETE FROM print_jobs WHERE status IN (' . self::ARCHIVED_STATUSES . ')');
+        $stmt->execute();
+
+        return $stmt->rowCount();
+    }
+
+    public static function deleteArchivedOlderThan(string $cutoff, int $batchSize): int
     {
         $stmt = Database::connection()->prepare(
-            'SELECT ' . self::LIST_COLUMNS . '
+            'DELETE FROM print_jobs WHERE id IN (
+                SELECT id FROM print_jobs
+                WHERE status IN (' . self::ARCHIVED_STATUSES . ')
+                  AND COALESCE(completed_at, failed_at, created_at) < :cutoff
+                LIMIT :batch
+             )'
+        );
+        $stmt->bindValue(':cutoff', $cutoff);
+        $stmt->bindValue(':batch', $batchSize, \PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->rowCount();
+    }
+
+    private static function countByStatus(string $statuses): int
+    {
+        $stmt = Database::connection()->prepare('SELECT COUNT(*) FROM print_jobs WHERE status IN (' . $statuses . ')');
+        $stmt->execute();
+
+        return (int) $stmt->fetchColumn();
+    }
+
+    /**
+     * @return array<int, array<string, mixed>>
+     */
+    private static function listByStatus(string $condition, ?int $limit, int $offset): array
+    {
+        $sql = 'SELECT ' . self::LIST_COLUMNS . '
              ' . self::LIST_JOINS . '
              WHERE ' . $condition . '
              GROUP BY j.id
-             ORDER BY j.created_at DESC
-             LIMIT :limit'
-        );
-        $stmt->bindValue(':limit', $limit, \PDO::PARAM_INT);
+             ORDER BY j.created_at DESC';
+
+        if ($limit !== null) {
+            $sql .= ' LIMIT :limit OFFSET :offset';
+        }
+
+        $stmt = Database::connection()->prepare($sql);
+
+        if ($limit !== null) {
+            $stmt->bindValue(':limit', $limit, \PDO::PARAM_INT);
+            $stmt->bindValue(':offset', $offset, \PDO::PARAM_INT);
+        }
+
         $stmt->execute();
 
         return $stmt->fetchAll();

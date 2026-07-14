@@ -6,6 +6,7 @@ namespace PrintBridge\Controllers;
 
 use PrintBridge\Repositories\AdminRepository;
 use PrintBridge\Services\AdminAuth;
+use PrintBridge\Services\ArchiveRetention;
 use PrintBridge\Support\Flash;
 use PrintBridge\Support\Http;
 use PrintBridge\Support\View;
@@ -19,7 +20,31 @@ final class SettingsController
             'message' => Flash::pull('message'),
             'error' => Flash::pull('error'),
             'databasePath' => PRINTBRIDGE_DATABASE,
+            'archiveMode' => ArchiveRetention::currentMode(),
+            'archiveDays' => ArchiveRetention::currentDays(),
+            'archivePresets' => ArchiveRetention::presets(),
         ]);
+    }
+
+    public static function updateArchiveRetention(): void
+    {
+        AdminAuth::requireLogin();
+
+        $submission = ArchiveRetention::resolveSubmission(
+            Http::post('mode'),
+            Http::post('preset_days'),
+            Http::post('custom_days')
+        );
+
+        if ($submission === null) {
+            Flash::set('error', 'error.invalid_archive_retention');
+            Http::redirect('/settings');
+            return;
+        }
+
+        ArchiveRetention::save($submission['mode'], $submission['days']);
+        Flash::set('message', 'settings.archive_retention_saved');
+        Http::redirect('/settings');
     }
 
     public static function changePassword(): void

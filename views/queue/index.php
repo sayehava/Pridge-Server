@@ -13,5 +13,11 @@ $title = Text::get('queue.title');
 </section>
 
 <section class="panel">
-    <?php $emptyTextKey = 'empty.waiting'; require PRINTBRIDGE_ROOT . '/views/queue/_table.php'; ?>
+    <?php
+    $emptyTextKey = 'empty.waiting';
+    $deleteSelectedAction = '/queue/delete-selected';
+    $deleteAllAction = '/queue/delete-all';
+    $deleteAllConfirmKey = 'confirm.delete_all_waiting';
+    require PRINTBRIDGE_ROOT . '/views/queue/_table.php';
+    ?>
 </section>

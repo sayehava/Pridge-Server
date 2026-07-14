@@ -99,6 +99,12 @@ CREATE TABLE IF NOT EXISTS client_sessions (
     FOREIGN KEY (client_id) REFERENCES clients(id) ON DELETE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS settings (
+    key TEXT PRIMARY KEY,
+    value TEXT NOT NULL,
+    updated_at TEXT NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS print_jobs (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     endpoint_id INTEGER NOT NULL,
@@ -119,6 +125,7 @@ CREATE TABLE IF NOT EXISTS print_jobs (
 
 CREATE INDEX IF NOT EXISTS idx_print_jobs_status_created ON print_jobs(status, created_at);
 CREATE INDEX IF NOT EXISTS idx_print_jobs_endpoint_status ON print_jobs(endpoint_id, status);
+CREATE INDEX IF NOT EXISTS idx_print_jobs_archive_cleanup ON print_jobs(status, completed_at, failed_at, created_at);
 CREATE INDEX IF NOT EXISTS idx_client_sessions_expires ON client_sessions(expires_at);
 CREATE INDEX IF NOT EXISTS idx_login_attempts_lock ON login_attempts(username, ip_hash, locked_until);
 SQL);

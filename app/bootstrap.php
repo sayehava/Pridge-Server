@@ -40,3 +40,4 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
 }
 
 \PrintBridge\Database::migrate();
+\PrintBridge\Services\ArchiveCleanupService::runIfDue();

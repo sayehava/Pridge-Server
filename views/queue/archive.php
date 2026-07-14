@@ -13,5 +13,11 @@ $title = Text::get('archive.title');
 </section>
 
 <section class="panel">
-    <?php $emptyTextKey = 'empty.archive'; require PRINTBRIDGE_ROOT . '/views/queue/_table.php'; ?>
+    <?php
+    $emptyTextKey = 'empty.archive';
+    $deleteSelectedAction = '/archive/delete-selected';
+    $deleteAllAction = '/archive/delete-all';
+    $deleteAllConfirmKey = 'confirm.delete_all_archived';
+    require PRINTBRIDGE_ROOT . '/views/queue/_table.php';
+    ?>
 </section>

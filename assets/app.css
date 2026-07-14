@@ -276,6 +276,37 @@ textarea:focus {
     outline: none;
 }
 
+input[type="checkbox"],
+input[type="radio"] {
+    accent-color: var(--accent);
+    height: 18px;
+    width: 18px;
+}
+
+input:disabled,
+select:disabled {
+    cursor: not-allowed;
+    opacity: .45;
+}
+
+.radio-option {
+    align-items: center;
+    color: var(--text);
+    display: flex;
+    flex-wrap: wrap;
+    font-size: 15px;
+    font-weight: 500;
+    gap: 10px;
+    letter-spacing: normal;
+    text-transform: none;
+}
+
+.radio-option select,
+.radio-option input[type="number"] {
+    min-width: 140px;
+    width: auto;
+}
+
 button {
     font-family: inherit;
 }
@@ -558,6 +589,54 @@ tbody tr:last-child td {
     gap: 8px;
 }
 
+.table-toolbar {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 16px;
+}
+
+.pagination {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    justify-content: space-between;
+    margin-top: 18px;
+}
+
+.pagination-size label {
+    align-items: center;
+    color: var(--muted);
+    display: flex;
+    flex-direction: row;
+    font-size: 13px;
+    font-weight: 600;
+    gap: 8px;
+    text-transform: none;
+}
+
+.pagination-size select {
+    width: auto;
+}
+
+.pagination-nav {
+    align-items: center;
+    display: flex;
+    gap: 10px;
+}
+
+.pagination-status {
+    color: var(--muted);
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+.is-disabled {
+    cursor: default;
+    opacity: .4;
+    pointer-events: none;
+}
+
 .assignment-form {
     display: grid;
     gap: 8px;
@@ -792,6 +871,10 @@ tbody tr:last-child td {
 
     .inline-form {
         grid-template-columns: 1fr;
+    }
+
+    .pagination {
+        justify-content: flex-start;
     }
 }
 

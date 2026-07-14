@@ -7,6 +7,7 @@ namespace PrintBridge\Controllers;
 use PrintBridge\Repositories\QueueRepository;
 use PrintBridge\Services\AdminAuth;
 use PrintBridge\Support\Http;
+use PrintBridge\Support\Pagination;
 use PrintBridge\Support\PayloadPreview;
 use PrintBridge\Support\View;
 
@@ -17,13 +18,29 @@ final class QueueController
     public static function index(): void
     {
         AdminAuth::requireLogin();
-        View::render('queue/index', ['jobs' => QueueRepository::waiting()]);
+        [$page, $perPage] = self::paginationParams();
+
+        View::render('queue/index', [
+            'jobs' => QueueRepository::waiting($perPage, self::offset($page, $perPage)),
+            'total' => QueueRepository::countWaiting(),
+            'page' => $page,
+            'perPage' => $perPage,
+            'basePath' => '/queue',
+        ]);
     }
 
     public static function archive(): void
     {
         AdminAuth::requireLogin();
-        View::render('queue/archive', ['jobs' => QueueRepository::archived()]);
+        [$page, $perPage] = self::paginationParams();
+
+        View::render('queue/archive', [
+            'jobs' => QueueRepository::archived($perPage, self::offset($page, $perPage)),
+            'total' => QueueRepository::countArchived(),
+            'page' => $page,
+            'perPage' => $perPage,
+            'basePath' => '/archive',
+        ]);
     }
 
     public static function show(int $id): void
@@ -85,5 +102,59 @@ final class QueueController
 
         QueueRepository::delete($id);
         Http::redirect($isArchived ? '/archive' : '/queue');
+    }
+
+    public static function deleteSelectedWaiting(): void
+    {
+        AdminAuth::requireLogin();
+        QueueRepository::deleteByIds(self::submittedIds());
+        Http::redirect('/queue');
+    }
+
+    public static function deleteAllWaiting(): void
+    {
+        AdminAuth::requireLogin();
+        QueueRepository::deleteAllWaiting();
+        Http::redirect('/queue');
+    }
+
+    public static function deleteSelectedArchived(): void
+    {
+        AdminAuth::requireLogin();
+        QueueRepository::deleteByIds(self::submittedIds());
+        Http::redirect('/archive');
+    }
+
+    public static function deleteAllArchived(): void
+    {
+        AdminAuth::requireLogin();
+        QueueRepository::deleteAllArchived();
+        Http::redirect('/archive');
+    }
+
+    /**
+     * @return array<int, int>
+     */
+    private static function submittedIds(): array
+    {
+        $ids = $_POST['ids'] ?? [];
+
+        return is_array($ids) ? array_map('intval', $ids) : [];
+    }
+
+    /**
+     * @return array{0: int, 1: int|null}
+     */
+    private static function paginationParams(): array
+    {
+        $page = Pagination::resolvePage($_GET['page'] ?? null);
+        $perPage = Pagination::resolvePerPage($_GET['per_page'] ?? null);
+
+        return [$page, $perPage];
+    }
+
+    private static function offset(int $page, ?int $perPage): int
+    {
+        return $perPage === null ? 0 : ($page - 1) * $perPage;
     }
 }
