@@ -56,6 +56,7 @@ CREATE TABLE IF NOT EXISTS login_attempts (
     ip_hash TEXT NOT NULL,
     attempts INTEGER NOT NULL DEFAULT 0,
     locked_until TEXT,
+    escalation_level INTEGER NOT NULL DEFAULT 0,
     first_attempt_at TEXT NOT NULL,
     last_attempt_at TEXT NOT NULL,
     UNIQUE(username, ip_hash)
@@ -131,6 +132,7 @@ CREATE INDEX IF NOT EXISTS idx_login_attempts_lock ON login_attempts(username, i
 SQL);
 
         self::addColumnIfMissing('admin_users', 'email', 'TEXT');
+        self::addColumnIfMissing('login_attempts', 'escalation_level', 'INTEGER NOT NULL DEFAULT 0');
     }
 
     private static function addColumnIfMissing(string $table, string $column, string $definition): void

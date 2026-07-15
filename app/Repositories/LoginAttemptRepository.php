@@ -10,9 +10,12 @@ use PrintBridge\Support\Clock;
 
 final class LoginAttemptRepository
 {
-    private const MAX_ATTEMPTS = 5;
-    private const WINDOW_SECONDS = 900;
-    private const LOCK_SECONDS = 900;
+    private const TIER1_MAX_ATTEMPTS = 3;
+    private const TIER1_WINDOW_SECONDS = 900;
+    private const TIER1_LOCK_SECONDS = 900;
+
+    private const TIER2_MAX_ATTEMPTS = 2;
+    private const TIER2_LOCK_SECONDS = 86400;
 
     public static function isLocked(string $username, string $ipHash): bool
     {
@@ -29,18 +32,42 @@ final class LoginAttemptRepository
         $attempt = self::find($username, $ipHash);
 
         if ($attempt === null) {
-            self::insert($username, $ipHash, 1, null, $now);
+            self::insert($username, $ipHash, 1, null, 0, $now);
             return;
         }
 
-        $firstAttemptTime = strtotime((string) $attempt['first_attempt_at']);
-        $withinWindow = $firstAttemptTime !== false && $firstAttemptTime >= (time() - self::WINDOW_SECONDS);
-        $attempts = $withinWindow ? ((int) $attempt['attempts'] + 1) : 1;
-        $lockedUntil = $attempts >= self::MAX_ATTEMPTS ? Clock::addSeconds(self::LOCK_SECONDS) : null;
+        $escalationLevel = (int) $attempt['escalation_level'];
+
+        if ($escalationLevel === 0) {
+            $firstAttemptTime = strtotime((string) $attempt['first_attempt_at']);
+            $withinWindow = $firstAttemptTime !== false && $firstAttemptTime >= (time() - self::TIER1_WINDOW_SECONDS);
+            $attempts = $withinWindow ? ((int) $attempt['attempts'] + 1) : 1;
+            $firstAttemptAt = $withinWindow ? (string) $attempt['first_attempt_at'] : $now;
+
+            if ($attempts >= self::TIER1_MAX_ATTEMPTS) {
+                $lockedUntil = Clock::addSeconds(self::TIER1_LOCK_SECONDS);
+                $escalationLevel = 1;
+                $attempts = 0;
+            } else {
+                $lockedUntil = null;
+            }
+        } else {
+            // Already served one lockout for this username/source: two more failures locks for 24 hours.
+            $attempts = (int) $attempt['attempts'] + 1;
+            $firstAttemptAt = (string) $attempt['first_attempt_at'];
+
+            if ($attempts >= self::TIER2_MAX_ATTEMPTS) {
+                $lockedUntil = Clock::addSeconds(self::TIER2_LOCK_SECONDS);
+                $attempts = 0;
+            } else {
+                $lockedUntil = null;
+            }
+        }
 
         $stmt = Database::connection()->prepare(
             'UPDATE login_attempts
-             SET attempts = :attempts, locked_until = :locked_until, first_attempt_at = :first_attempt_at, last_attempt_at = :last_attempt_at
+             SET attempts = :attempts, locked_until = :locked_until, escalation_level = :escalation_level,
+                 first_attempt_at = :first_attempt_at, last_attempt_at = :last_attempt_at
              WHERE username = :username AND ip_hash = :ip_hash'
         );
         $stmt->execute([
@@ -48,7 +75,8 @@ final class LoginAttemptRepository
             ':ip_hash' => $ipHash,
             ':attempts' => $attempts,
             ':locked_until' => $lockedUntil,
-            ':first_attempt_at' => $withinWindow ? $attempt['first_attempt_at'] : $now,
+            ':escalation_level' => $escalationLevel,
+            ':first_attempt_at' => $firstAttemptAt,
             ':last_attempt_at' => $now,
         ]);
     }
@@ -65,7 +93,7 @@ final class LoginAttemptRepository
     private static function find(string $username, string $ipHash): ?array
     {
         $stmt = Database::connection()->prepare(
-            'SELECT username, ip_hash, attempts, locked_until, first_attempt_at, last_attempt_at
+            'SELECT username, ip_hash, attempts, locked_until, escalation_level, first_attempt_at, last_attempt_at
              FROM login_attempts
              WHERE username = :username AND ip_hash = :ip_hash'
         );
@@ -75,17 +103,18 @@ final class LoginAttemptRepository
         return is_array($attempt) ? $attempt : null;
     }
 
-    private static function insert(string $username, string $ipHash, int $attempts, ?string $lockedUntil, string $now): void
+    private static function insert(string $username, string $ipHash, int $attempts, ?string $lockedUntil, int $escalationLevel, string $now): void
     {
         $stmt = Database::connection()->prepare(
-            'INSERT INTO login_attempts (username, ip_hash, attempts, locked_until, first_attempt_at, last_attempt_at)
-             VALUES (:username, :ip_hash, :attempts, :locked_until, :first_attempt_at, :last_attempt_at)'
+            'INSERT INTO login_attempts (username, ip_hash, attempts, locked_until, escalation_level, first_attempt_at, last_attempt_at)
+             VALUES (:username, :ip_hash, :attempts, :locked_until, :escalation_level, :first_attempt_at, :last_attempt_at)'
         );
         $stmt->execute([
             ':username' => $username,
             ':ip_hash' => $ipHash,
             ':attempts' => $attempts,
             ':locked_until' => $lockedUntil,
+            ':escalation_level' => $escalationLevel,
             ':first_attempt_at' => $now,
             ':last_attempt_at' => $now,
         ]);
