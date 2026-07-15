@@ -1,33 +1,33 @@
 # Endpoint Module Development Guide
 
-This guide explains how to build a source-side integration module — a plugin for WordPress, Joomla, PrestaShop, Magento, OpenCart, a custom ERP, or any other system — that submits print jobs into PrintBridge Server. This is the same role played by an official "PrintBridge for WooCommerce" or "PrintBridge for Joomla" plugin would play: it watches for an event (a new order, an invoice, a label request) inside the host application and forwards the raw print data to a PrintBridge endpoint.
+This guide explains how to build a source-side integration module — a plugin for WordPress, Joomla, PrestaShop, Magento, OpenCart, a custom ERP, or any other system — that submits print jobs into Pridge Server. This is the same role played by an official "Pridge for WooCommerce" or "Pridge for Joomla" plugin would play: it watches for an event (a new order, an invoice, a label request) inside the host application and forwards the raw print data to a Pridge endpoint.
 
-If you are building the desktop application that pulls jobs and sends them to a physical printer, see [`client-agent-development.md`](client-agent-development.md) instead. This guide is about the other side: getting print jobs *into* PrintBridge from a CMS, e-commerce platform, or any other application.
+If you are building the desktop application that pulls jobs and sends them to a physical printer, see [`client-agent-development.md`](client-agent-development.md) instead. This guide is about the other side: getting print jobs *into* Pridge from a CMS, e-commerce platform, or any other application.
 
 ## Terminology
 
-- **Endpoint**: a virtual printer created in the PrintBridge admin UI at `/endpoints`. Each endpoint has its own bearer token.
-- **Module** (also called a plugin or connector): the code you are building. It lives inside the host application (WordPress, Joomla, PrestaShop, a custom backend, etc.) and calls the PrintBridge API.
-- **Client**: the desktop/tray agent on the office computer that later pulls the job from PrintBridge and sends it to a real printer. Your module never talks to the client directly.
+- **Endpoint**: a virtual printer created in the Pridge admin UI at `/endpoints`. Each endpoint has its own bearer token.
+- **Module** (also called a plugin or connector): the code you are building. It lives inside the host application (WordPress, Joomla, PrestaShop, a custom backend, etc.) and calls the Pridge API.
+- **Client**: the desktop/tray agent on the office computer that later pulls the job from Pridge and sends it to a real printer. Your module never talks to the client directly.
 
-Your module's only job is to turn an event in the host application into an HTTP request to PrintBridge. Everything downstream (queueing, client assignment, printing) is handled by the server and the client agent.
+Your module's only job is to turn an event in the host application into an HTTP request to Pridge. Everything downstream (queueing, client assignment, printing) is handled by the server and the client agent.
 
 ## How a Module Fits Into the System
 
 ```
-[Host app event]  --->  [Your module]  --->  POST /api/plugin/jobs  --->  [PrintBridge queue]  --->  [Client agent]  --->  [Physical printer]
+[Host app event]  --->  [Your module]  --->  POST /api/plugin/jobs  --->  [Pridge queue]  --->  [Client agent]  --->  [Physical printer]
 ```
 
-For example, in a WooCommerce store: a customer places an order → your module builds an ESC/POS receipt or a PDF invoice → your module POSTs the raw bytes to PrintBridge with the endpoint token → the job sits in the queue as `pending` → a client agent assigned to that endpoint reserves and prints it.
+For example, in a WooCommerce store: a customer places an order → your module builds an ESC/POS receipt or a PDF invoice → your module POSTs the raw bytes to Pridge with the endpoint token → the job sits in the queue as `pending` → a client agent assigned to that endpoint reserves and prints it.
 
 ## Prerequisites
 
 Before writing any module code:
 
-1. Install PrintBridge Server and confirm it is reachable over HTTPS.
+1. Install Pridge Server and confirm it is reachable over HTTPS.
 2. Log in to the admin UI and create an endpoint at `/endpoints`. Give it a descriptive name, for example "Kitchen Receipt Printer" or "Shipping Label Printer".
 3. Copy the endpoint token shown once at creation time. This token is what your module authenticates with. If it is lost, regenerate it from the same page — the old token stops working immediately.
-4. Decide what raw format the destination printer expects (ESC/POS, ZPL, plain text, PDF, or another format). PrintBridge does not convert or interpret the payload; it stores and forwards exactly the bytes you send.
+4. Decide what raw format the destination printer expects (ESC/POS, ZPL, plain text, PDF, or another format). Pridge does not convert or interpret the payload; it stores and forwards exactly the bytes you send.
 
 ## Core API Contract
 
@@ -39,7 +39,7 @@ Full request/response details live in [`client-integration.md`](client-integrati
 POST /api/plugin/jobs
 Authorization: Bearer ENDPOINT_TOKEN
 Content-Type: application/octet-stream
-X-PrintBridge-Metadata: {"source":"woocommerce","order_id":"1001"}
+X-Pridge-Metadata: {"source":"woocommerce","order_id":"1001"}
 
 RAW_PRINT_PAYLOAD_BYTES
 ```
@@ -74,7 +74,7 @@ Rules:
 - The request body is the raw payload, untouched. Do not JSON-wrap it, base64-encode it, or add a trailing newline unless the printer format requires one.
 - Send the endpoint token as a bearer token in the `Authorization` header, never in a URL query string.
 - Set `Content-Type` to the real payload type when known (`text/plain`, `application/pdf`, `image/png`). Use `application/octet-stream` for raw ESC/POS or ZPL data.
-- `X-PrintBridge-Metadata` is optional. Keep it small and JSON-encoded — it is stored alongside the job and shown to the client agent and in the admin queue view, not used for routing.
+- `X-Pridge-Metadata` is optional. Keep it small and JSON-encoded — it is stored alongside the job and shown to the client agent and in the admin queue view, not used for routing.
 
 ### List clients assigned to this endpoint (optional)
 
@@ -100,7 +100,7 @@ Most modules never need this route. Job submission alone is enough for printing 
 
 ## Building the Print Payload
 
-PrintBridge is format-agnostic. Your module is responsible for producing the exact bytes the printer expects.
+Pridge is format-agnostic. Your module is responsible for producing the exact bytes the printer expects.
 
 - **ESC/POS receipts**: build the byte sequence directly (escape codes plus text), or use a library in your host language (e.g. `mike42/escpos-php` for PHP).
 - **ZPL labels**: generate the ZPL text string. It is plain ASCII, so `Content-Type: text/plain` is appropriate.
@@ -113,7 +113,7 @@ Do not transform line endings or character encoding after generating the payload
 
 Every module needs a small settings UI inside the host application where the store owner enters:
 
-- PrintBridge server URL (e.g. `https://printbridge.example.com`)
+- Pridge server URL (e.g. `https://pridge.example.com`)
 - Endpoint token (store this as a secret, never display it again after saving — treat it like an API key or password)
 - Which event triggers a print (e.g. "print on order status: Processing")
 
@@ -128,28 +128,28 @@ These are minimal skeletons to adapt, not production-ready plugins. Each one rea
 ```php
 <?php
 /**
- * Plugin Name: PrintBridge Connector
+ * Plugin Name: Pridge Connector
  */
 
-add_action('woocommerce_order_status_processing', 'printbridge_send_order_receipt');
+add_action('woocommerce_order_status_processing', 'pridge_send_order_receipt');
 
-function printbridge_send_order_receipt(int $order_id): void
+function pridge_send_order_receipt(int $order_id): void
 {
-    $server_url = get_option('printbridge_server_url');
-    $endpoint_token = get_option('printbridge_endpoint_token');
+    $server_url = get_option('pridge_server_url');
+    $endpoint_token = get_option('pridge_endpoint_token');
 
     if (!$server_url || !$endpoint_token) {
         return;
     }
 
     $order = wc_get_order($order_id);
-    $payload = printbridge_build_receipt_text($order); // your own formatting function
+    $payload = pridge_build_receipt_text($order); // your own formatting function
 
     $response = wp_remote_post(rtrim($server_url, '/') . '/api/plugin/jobs', [
         'headers' => [
             'Authorization' => 'Bearer ' . $endpoint_token,
             'Content-Type' => 'text/plain',
-            'X-PrintBridge-Metadata' => wp_json_encode([
+            'X-Pridge-Metadata' => wp_json_encode([
                 'source' => 'woocommerce',
                 'order_id' => (string) $order_id,
             ]),
@@ -159,13 +159,13 @@ function printbridge_send_order_receipt(int $order_id): void
     ]);
 
     if (is_wp_error($response)) {
-        error_log('PrintBridge: failed to submit job for order ' . $order_id . ': ' . $response->get_error_message());
+        error_log('Pridge: failed to submit job for order ' . $order_id . ': ' . $response->get_error_message());
         return;
     }
 
     $status = wp_remote_retrieve_response_code($response);
     if ($status !== 201) {
-        error_log('PrintBridge: server rejected job for order ' . $order_id . ' (HTTP ' . $status . ')');
+        error_log('Pridge: server rejected job for order ' . $order_id . ' (HTTP ' . $status . ')');
     }
 }
 ```
@@ -180,7 +180,7 @@ Joomla plugins hook into events dispatched by core or third-party extensions (fo
 use Joomla\CMS\Http\HttpFactory;
 use Joomla\CMS\Plugin\CMSPlugin;
 
-class PlgSystemPrintbridge extends CMSPlugin
+class PlgSystemPridge extends CMSPlugin
 {
     public function onOrderComplete(array $order): void
     {
@@ -198,7 +198,7 @@ class PlgSystemPrintbridge extends CMSPlugin
         $headers = [
             'Authorization' => 'Bearer ' . $endpointToken,
             'Content-Type' => 'text/plain',
-            'X-PrintBridge-Metadata' => json_encode([
+            'X-Pridge-Metadata' => json_encode([
                 'source' => 'joomla',
                 'order_id' => (string) $order['id'],
             ]),
@@ -207,10 +207,10 @@ class PlgSystemPrintbridge extends CMSPlugin
         try {
             $response = $http->post($serverUrl . '/api/plugin/jobs', $payload, $headers, 10);
             if ($response->code !== 201) {
-                Log::add('PrintBridge job submission failed: HTTP ' . $response->code, Log::WARNING, 'printbridge');
+                Log::add('Pridge job submission failed: HTTP ' . $response->code, Log::WARNING, 'pridge');
             }
         } catch (\RuntimeException $e) {
-            Log::add('PrintBridge job submission error: ' . $e->getMessage(), Log::ERROR, 'printbridge');
+            Log::add('Pridge job submission error: ' . $e->getMessage(), Log::ERROR, 'pridge');
         }
     }
 }
@@ -221,12 +221,12 @@ class PlgSystemPrintbridge extends CMSPlugin
 ```php
 <?php
 
-class PrintBridge extends Module
+class Pridge extends Module
 {
     public function hookActionOrderStatusUpdate(array $params): void
     {
-        $serverUrl = rtrim((string) Configuration::get('PRINTBRIDGE_SERVER_URL'), '/');
-        $endpointToken = (string) Configuration::get('PRINTBRIDGE_ENDPOINT_TOKEN');
+        $serverUrl = rtrim((string) Configuration::get('PRIDGE_SERVER_URL'), '/');
+        $endpointToken = (string) Configuration::get('PRIDGE_ENDPOINT_TOKEN');
 
         if ($serverUrl === '' || $endpointToken === '' || (int) $params['newOrderStatus']->id !== (int) Configuration::get('PS_OS_PREPARATION')) {
             return;
@@ -242,7 +242,7 @@ class PrintBridge extends Module
             CURLOPT_HTTPHEADER => [
                 'Authorization: Bearer ' . $endpointToken,
                 'Content-Type: text/plain',
-                'X-PrintBridge-Metadata: ' . json_encode(['source' => 'prestashop', 'order_id' => (string) $order->id]),
+                'X-Pridge-Metadata: ' . json_encode(['source' => 'prestashop', 'order_id' => (string) $order->id]),
             ],
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_TIMEOUT => 10,
@@ -265,12 +265,12 @@ use Drupal\Core\Entity\EntityInterface;
 /**
  * Implements hook_ENTITY_TYPE_update() for commerce_order.
  */
-function printbridge_commerce_order_update(EntityInterface $order) {
+function pridge_commerce_order_update(EntityInterface $order) {
   if ($order->getState()->getId() !== 'completed') {
     return;
   }
 
-  $config = \Drupal::config('printbridge.settings');
+  $config = \Drupal::config('pridge.settings');
   $serverUrl = rtrim((string) $config->get('server_url'), '/');
   $endpointToken = (string) $config->get('endpoint_token');
 
@@ -278,14 +278,14 @@ function printbridge_commerce_order_update(EntityInterface $order) {
     return;
   }
 
-  $payload = printbridge_build_receipt($order); // your own formatting function
+  $payload = pridge_build_receipt($order); // your own formatting function
 
   try {
     \Drupal::httpClient()->post($serverUrl . '/api/plugin/jobs', [
       'headers' => [
         'Authorization' => 'Bearer ' . $endpointToken,
         'Content-Type' => 'text/plain',
-        'X-PrintBridge-Metadata' => json_encode([
+        'X-Pridge-Metadata' => json_encode([
           'source' => 'drupal-commerce',
           'order_id' => (string) $order->id(),
         ]),
@@ -295,7 +295,7 @@ function printbridge_commerce_order_update(EntityInterface $order) {
     ]);
   }
   catch (\GuzzleHttp\Exception\GuzzleException $e) {
-    \Drupal::logger('printbridge')->error('Job submission failed for order @id: @message', [
+    \Drupal::logger('pridge')->error('Job submission failed for order @id: @message', [
       '@id' => $order->id(),
       '@message' => $e->getMessage(),
     ]);
@@ -303,7 +303,7 @@ function printbridge_commerce_order_update(EntityInterface $order) {
 }
 ```
 
-Store `server_url` and `endpoint_token` in the module's config schema (`printbridge.settings.yml`) and expose them through a Drupal settings form, not in code.
+Store `server_url` and `endpoint_token` in the module's config schema (`pridge.settings.yml`) and expose them through a Drupal settings form, not in code.
 
 ### TYPO3
 
@@ -312,7 +312,7 @@ TYPO3 extensions built on TYPO3 v10+ should react to a PSR-14 event from the sho
 ```php
 <?php
 
-namespace Vendor\PrintbridgeConnector\EventListener;
+namespace Vendor\PridgeConnector\EventListener;
 
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Http\RequestFactory;
@@ -328,7 +328,7 @@ final class SubmitPrintJob
 
     public function __invoke(OrderPlacedEvent $event): void
     {
-        $config = $this->extensionConfiguration->get('printbridge_connector');
+        $config = $this->extensionConfiguration->get('pridge_connector');
         $serverUrl = rtrim((string) ($config['serverUrl'] ?? ''), '/');
         $endpointToken = (string) ($config['endpointToken'] ?? '');
 
@@ -344,7 +344,7 @@ final class SubmitPrintJob
                 'headers' => [
                     'Authorization' => 'Bearer ' . $endpointToken,
                     'Content-Type' => 'text/plain',
-                    'X-PrintBridge-Metadata' => json_encode([
+                    'X-Pridge-Metadata' => json_encode([
                         'source' => 'typo3',
                         'order_id' => (string) $order->getUid(),
                     ]),
@@ -370,7 +370,7 @@ For a custom shop, ERP, or a system like Dolibarr that doesn't need a full plugi
 
 declare(strict_types=1);
 
-function printbridge_submit_job(
+function pridge_submit_job(
     string $serverUrl,
     string $endpointToken,
     string $payload,
@@ -383,7 +383,7 @@ function printbridge_submit_job(
     ];
 
     if ($metadata !== []) {
-        $headers[] = 'X-PrintBridge-Metadata: ' . json_encode($metadata);
+        $headers[] = 'X-Pridge-Metadata: ' . json_encode($metadata);
     }
 
     $ch = curl_init(rtrim($serverUrl, '/') . '/api/plugin/jobs');
@@ -402,11 +402,11 @@ function printbridge_submit_job(
     curl_close($ch);
 
     if ($body === false) {
-        throw new RuntimeException('PrintBridge request failed: ' . $error);
+        throw new RuntimeException('Pridge request failed: ' . $error);
     }
 
     if ($status !== 201) {
-        throw new RuntimeException('PrintBridge rejected the job: HTTP ' . $status . ' ' . $body);
+        throw new RuntimeException('Pridge rejected the job: HTTP ' . $status . ' ' . $body);
     }
 
     $decoded = json_decode($body, true);
@@ -415,8 +415,8 @@ function printbridge_submit_job(
 }
 
 // Usage, e.g. from a Dolibarr trigger, a legacy cart, or any plain PHP script:
-$jobId = printbridge_submit_job(
-    'https://printbridge.example.com',
+$jobId = pridge_submit_job(
+    'https://pridge.example.com',
     'ENDPOINT_TOKEN',
     "Order #5001\n2x Widget\nTotal: \$19.98\n",
     'text/plain',
@@ -433,10 +433,10 @@ If the host application is not PHP-based, the integration is the same three step
 curl:
 
 ```bash
-curl -X POST "https://printbridge.example.com/api/plugin/jobs" \
+curl -X POST "https://pridge.example.com/api/plugin/jobs" \
   -H "Authorization: Bearer ENDPOINT_TOKEN" \
   -H "Content-Type: text/plain" \
-  -H 'X-PrintBridge-Metadata: {"source":"custom-erp","order_id":"5001"}' \
+  -H 'X-Pridge-Metadata: {"source":"custom-erp","order_id":"5001"}' \
   --data-binary @receipt.txt
 ```
 
@@ -446,11 +446,11 @@ Python:
 import requests
 
 response = requests.post(
-    "https://printbridge.example.com/api/plugin/jobs",
+    "https://pridge.example.com/api/plugin/jobs",
     headers={
         "Authorization": "Bearer ENDPOINT_TOKEN",
         "Content-Type": "text/plain",
-        "X-PrintBridge-Metadata": '{"source":"custom-erp","order_id":"5001"}',
+        "X-Pridge-Metadata": '{"source":"custom-erp","order_id":"5001"}',
     },
     data=receipt_bytes,
     timeout=10,
@@ -462,18 +462,18 @@ job_id = response.json()["job_id"]
 Node.js:
 
 ```javascript
-const response = await fetch("https://printbridge.example.com/api/plugin/jobs", {
+const response = await fetch("https://pridge.example.com/api/plugin/jobs", {
   method: "POST",
   headers: {
     Authorization: "Bearer ENDPOINT_TOKEN",
     "Content-Type": "text/plain",
-    "X-PrintBridge-Metadata": JSON.stringify({ source: "custom-erp", order_id: "5001" }),
+    "X-Pridge-Metadata": JSON.stringify({ source: "custom-erp", order_id: "5001" }),
   },
   body: receiptBytes,
 });
 
 if (!response.ok) {
-  throw new Error(`PrintBridge rejected the job: HTTP ${response.status}`);
+  throw new Error(`Pridge rejected the job: HTTP ${response.status}`);
 }
 
 const { job_id: jobId } = await response.json();
@@ -483,17 +483,17 @@ const { job_id: jobId } = await response.json();
 
 Handle these outcomes explicitly:
 
-- `201` — job accepted. Store `job_id` in your own logs if you want to correlate later, but PrintBridge does not expose a lookup-by-external-id route.
+- `201` — job accepted. Store `job_id` in your own logs if you want to correlate later, but Pridge does not expose a lookup-by-external-id route.
 - `400` — the request body was empty. This is a bug in your module, not a transient failure; do not retry blindly.
 - `401` — the token is invalid, disabled, or was regenerated. Stop retrying and surface a clear error to the store owner so they can re-enter the token.
 - Network errors / timeouts — safe to retry a small number of times with backoff. Do not retry indefinitely inside a web request that blocks a customer-facing page load; queue the retry asynchronously if the host platform supports it (e.g. WooCommerce action scheduler, Joomla's `#__jobs`, PrestaShop's message queue, or a simple cron-based retry table).
 
-Never let a PrintBridge outage break checkout or order processing in the host application. Fire the request after the order is committed, and fail silently (with logging) rather than rolling back the host transaction.
+Never let a Pridge outage break checkout or order processing in the host application. Fire the request after the order is committed, and fail silently (with logging) rather than rolling back the host transaction.
 
 ## Testing Your Module
 
 1. Trigger the event manually (place a test order, or call your module's send function directly from a debug script).
-2. Confirm the job appears in the PrintBridge admin queue at `/queue` with status `pending`.
+2. Confirm the job appears in the Pridge admin queue at `/queue` with status `pending`.
 3. Open the job to preview the payload and confirm it rendered or downloaded as expected.
 4. Test the failure paths: an invalid token should produce a `401` and a clear module-side error; an empty payload should produce a `400`.
 5. Run a client agent (see [`client-agent-development.md`](client-agent-development.md)) against a test endpoint and confirm the job reaches `printed`.
@@ -501,7 +501,7 @@ Never let a PrintBridge outage break checkout or order processing in the host ap
 You can also test the raw API without your module using curl, before wiring up the host application:
 
 ```bash
-curl -i -X POST "https://printbridge.example.com/api/plugin/jobs" \
+curl -i -X POST "https://pridge.example.com/api/plugin/jobs" \
   -H "Authorization: Bearer ENDPOINT_TOKEN" \
   -H "Content-Type: text/plain" \
   --data-binary "Hello from a test print job"
@@ -513,7 +513,7 @@ curl -i -X POST "https://printbridge.example.com/api/plugin/jobs" \
 - Store the token using the host platform's secret-storage mechanism, and never echo it back in full after initial save.
 - Always use HTTPS in production. Do not disable TLS certificate verification in your HTTP client to work around a self-signed certificate — fix the certificate instead.
 - Do not log the endpoint token, full payload contents, or any customer PII beyond what is already in the host application's own logs.
-- Let the store owner regenerate the token from the PrintBridge admin UI at any time, and make sure your module's settings screen lets them update the stored value without a plugin reinstall.
+- Let the store owner regenerate the token from the Pridge admin UI at any time, and make sure your module's settings screen lets them update the stored value without a plugin reinstall.
 
 ## Module Development Checklist
 

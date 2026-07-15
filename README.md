@@ -1,6 +1,6 @@
-# PrintBridge Server
+# Pridge Server
 
-PrintBridge Server is a plain PHP and SQLite print job server for shared hosting environments.
+Pridge Server is a plain PHP and SQLite print job server for shared hosting environments.
 
 It provides an admin web UI, plugin-side print job receiving, client-side job pulling, endpoint tokens, client authentication, queue status tracking, and password recovery.
 
@@ -20,13 +20,13 @@ This project can run directly from the folder that cPanel creates for a subdomai
 Upload the project files into the subdomain document root, for example:
 
 ```text
-public_html/printbridge
+public_html/pridge
 ```
 
 or:
 
 ```text
-printbridge.yourdomain.com
+pridge.yourdomain.com
 ```
 
 The root `index.php` and `.htaccess` files handle requests from that folder. You do not need to point cPanel to the `public` folder.
@@ -41,7 +41,7 @@ storage/database
 The application creates the SQLite database automatically at:
 
 ```text
-storage/database/printbridge.sqlite
+storage/database/pridge.sqlite
 ```
 
 ### Optional Public Web Root Installation
@@ -80,7 +80,7 @@ The `storage`, `storage/database`, `app`, and `views` directories include `.htac
 
 The root `.htaccess` also disables directory indexes, routes clean URLs to `index.php`, and blocks direct access to project documentation files.
 
-For best production security, keep `storage` outside the public web root when your host allows it. Never expose `printbridge.sqlite` through HTTP.
+For best production security, keep `storage` outside the public web root when your host allows it. Never expose `pridge.sqlite` through HTTP.
 
 ## First Admin Setup
 
@@ -114,7 +114,7 @@ Submit a print job:
 POST /api/plugin/jobs
 Authorization: Bearer ENDPOINT_TOKEN
 Content-Type: application/octet-stream
-X-PrintBridge-Metadata: {"source":"woocommerce","order_id":"1001"}
+X-Pridge-Metadata: {"source":"woocommerce","order_id":"1001"}
 
 RAW_PRINT_PAYLOAD
 ```
@@ -197,7 +197,7 @@ Open a job to preview its payload: images and PDFs render inline, plain text ren
 Back up these paths regularly:
 
 ```text
-storage/database/printbridge.sqlite
+storage/database/pridge.sqlite
 storage/
 ```
 

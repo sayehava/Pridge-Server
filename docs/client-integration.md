@@ -1,6 +1,6 @@
-# PrintBridge Client and Plugin Integration
+# Pridge Client and Plugin Integration
 
-This document explains how external systems should send raw print data to PrintBridge Server and how office-side clients should pull and report jobs.
+This document explains how external systems should send raw print data to Pridge Server and how office-side clients should pull and report jobs.
 
 ## Terminology
 
@@ -21,7 +21,7 @@ Request:
 POST /api/plugin/jobs
 Authorization: Bearer ENDPOINT_TOKEN
 Content-Type: application/octet-stream
-X-PrintBridge-Metadata: {"source":"woocommerce","order_id":"1001"}
+X-Pridge-Metadata: {"source":"woocommerce","order_id":"1001"}
 
 RAW_PRINT_PAYLOAD_BYTES
 ```
@@ -43,7 +43,7 @@ Notes:
 - Binary payloads are allowed.
 - Set `Content-Type` to the payload type when known.
 - Use `application/octet-stream` when the payload type is unknown.
-- `X-PrintBridge-Metadata` is optional and should contain JSON when possible.
+- `X-Pridge-Metadata` is optional and should contain JSON when possible.
 - The endpoint token must not be sent as a GET parameter.
 
 ## Plugin: Fetch Assigned Clients

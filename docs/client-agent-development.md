@@ -1,12 +1,12 @@
 # Client Agent Development Guide
 
-This guide describes how to build a client-side application that works with PrintBridge Server.
+This guide describes how to build a client-side application that works with Pridge Server.
 
-The client agent is a local desktop or tray application that stays running on the office computer. It discovers local printers, shows a simple GUI, pulls print jobs from PrintBridge Server, and sends the raw job payload to a selected local printer.
+The client agent is a local desktop or tray application that stays running on the office computer. It discovers local printers, shows a simple GUI, pulls print jobs from Pridge Server, and sends the raw job payload to a selected local printer.
 
 The server remains PHP and SQLite for shared hosting. The client agent can be written in Python for the first fast version and rewritten later in another language.
 
-If you are building the plugin/module that submits print jobs from a CMS or e-commerce platform (WordPress, Joomla, PrestaShop, and so on), see [`module-development.md`](module-development.md) instead. This guide is about the other side: pulling jobs out of PrintBridge and printing them.
+If you are building the plugin/module that submits print jobs from a CMS or e-commerce platform (WordPress, Joomla, PrestaShop, and so on), see [`module-development.md`](module-development.md) instead. This guide is about the other side: pulling jobs out of Pridge and printing them.
 
 ## Responsibilities
 
@@ -15,7 +15,7 @@ The client agent should:
 - Stay live on the client computer.
 - Start automatically with the operating system when possible.
 - Store server URL and client token locally.
-- Authenticate with PrintBridge Server using the client token.
+- Authenticate with Pridge Server using the client token.
 - Send regular heartbeat requests.
 - Fetch assigned jobs.
 - Reserve one job at a time.
@@ -45,7 +45,7 @@ Avoid adding this Python agent to the PHP shared-hosting server runtime. Treat i
 The client agent needs these settings:
 
 ```text
-server_url=https://printbridge.example.com
+server_url=https://pridge.example.com
 client_token=CLIENT_TOKEN_FROM_ADMIN_UI
 default_printer=Local Printer Name
 poll_interval_seconds=5
@@ -107,7 +107,7 @@ The app should refresh this list from the GUI.
 
 ## Authentication Flow
 
-Clients authenticate with the client token created in the PrintBridge admin UI.
+Clients authenticate with the client token created in the Pridge admin UI.
 
 Request:
 
@@ -252,7 +252,7 @@ import win32print
 def send_raw_to_printer(printer_name, payload):
     handle = win32print.OpenPrinter(printer_name)
     try:
-        job = win32print.StartDocPrinter(handle, 1, ("PrintBridge Job", None, "RAW"))
+        job = win32print.StartDocPrinter(handle, 1, ("Pridge Job", None, "RAW"))
         try:
             win32print.StartPagePrinter(handle)
             win32print.WritePrinter(handle, payload)
@@ -278,7 +278,7 @@ def send_raw_to_printer(printer_name, payload):
     with tempfile.NamedTemporaryFile(delete=False) as temp:
         temp.write(payload)
         temp_path = temp.name
-    connection.printFile(printer_name, temp_path, "PrintBridge Job", {"raw": "true"})
+    connection.printFile(printer_name, temp_path, "Pridge Job", {"raw": "true"})
 ```
 
 ## Failure Handling
