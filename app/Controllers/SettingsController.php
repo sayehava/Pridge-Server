@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace PrintBridge\Controllers;
+namespace Pridge\Controllers;
 
-use PrintBridge\Repositories\AdminRepository;
-use PrintBridge\Services\AdminAuth;
-use PrintBridge\Services\ArchiveRetention;
-use PrintBridge\Services\Mailer;
-use PrintBridge\Support\Flash;
-use PrintBridge\Support\Http;
-use PrintBridge\Support\View;
+use Pridge\Repositories\AdminRepository;
+use Pridge\Services\AdminAuth;
+use Pridge\Services\ArchiveRetention;
+use Pridge\Services\Mailer;
+use Pridge\Support\Flash;
+use Pridge\Support\Http;
+use Pridge\Support\View;
 
 final class SettingsController
 {
@@ -22,7 +22,7 @@ final class SettingsController
         View::render('settings/index', [
             'message' => Flash::pull('message'),
             'error' => Flash::pull('error'),
-            'databasePath' => PRINTBRIDGE_DATABASE,
+            'databasePath' => PRIDGE_DATABASE,
             'archiveMode' => ArchiveRetention::currentMode(),
             'archiveDays' => ArchiveRetention::currentDays(),
             'archivePresets' => ArchiveRetention::presets(),

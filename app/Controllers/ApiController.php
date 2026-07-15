@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace PrintBridge\Controllers;
+namespace Pridge\Controllers;
 
-use PrintBridge\Repositories\ApiRepository;
-use PrintBridge\Support\Http;
+use Pridge\Repositories\ApiRepository;
+use Pridge\Support\Http;
 
 final class ApiController
 {
@@ -237,7 +237,7 @@ final class ApiController
 
     private static function metadataJson(): ?string
     {
-        $metadata = $_SERVER['HTTP_X_PRINTBRIDGE_METADATA'] ?? null;
+        $metadata = $_SERVER['HTTP_X_PRIDGE_METADATA'] ?? null;
 
         if (!is_string($metadata) || $metadata === '') {
             return null;

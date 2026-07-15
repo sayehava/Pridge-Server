@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace PrintBridge\Services;
+namespace Pridge\Services;
 
-use PrintBridge\Repositories\SettingsRepository;
-use PrintBridge\Support\SmtpMailer;
+use Pridge\Repositories\SettingsRepository;
+use Pridge\Support\SmtpMailer;
 
 final class Mailer
 {

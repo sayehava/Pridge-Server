@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace PrintBridge\Services;
+namespace Pridge\Services;
 
-use PrintBridge\Repositories\SettingsRepository;
+use Pridge\Repositories\SettingsRepository;
 
 final class ArchiveRetention
 {

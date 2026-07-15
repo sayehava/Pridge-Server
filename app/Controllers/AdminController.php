@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace PrintBridge\Controllers;
+namespace Pridge\Controllers;
 
-use PrintBridge\Database;
-use PrintBridge\Repositories\AdminRepository;
-use PrintBridge\Services\AdminAuth;
-use PrintBridge\Support\Http;
-use PrintBridge\Support\View;
+use Pridge\Database;
+use Pridge\Repositories\AdminRepository;
+use Pridge\Services\AdminAuth;
+use Pridge\Support\Http;
+use Pridge\Support\View;
 
 final class AdminController
 {

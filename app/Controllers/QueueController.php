@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace PrintBridge\Controllers;
+namespace Pridge\Controllers;
 
-use PrintBridge\Repositories\QueueRepository;
-use PrintBridge\Services\AdminAuth;
-use PrintBridge\Support\Http;
-use PrintBridge\Support\Pagination;
-use PrintBridge\Support\PayloadPreview;
-use PrintBridge\Support\View;
+use Pridge\Repositories\QueueRepository;
+use Pridge\Services\AdminAuth;
+use Pridge\Support\Http;
+use Pridge\Support\Pagination;
+use Pridge\Support\PayloadPreview;
+use Pridge\Support\View;
 
 final class QueueController
 {

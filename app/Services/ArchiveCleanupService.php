@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace PrintBridge\Services;
+namespace Pridge\Services;
 
-use PrintBridge\Repositories\QueueRepository;
-use PrintBridge\Repositories\SettingsRepository;
-use PrintBridge\Support\Clock;
+use Pridge\Repositories\QueueRepository;
+use Pridge\Repositories\SettingsRepository;
+use Pridge\Support\Clock;
 
 final class ArchiveCleanupService
 {

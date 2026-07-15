@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace PrintBridge\Repositories;
+namespace Pridge\Repositories;
 
-use PrintBridge\Database;
+use Pridge\Database;
 
 final class QueueRepository
 {

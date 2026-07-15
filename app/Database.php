@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PrintBridge;
+namespace Pridge;
 
 use PDO;
 
@@ -16,7 +16,7 @@ final class Database
             return self::$connection;
         }
 
-        $pdo = new PDO('sqlite:' . PRINTBRIDGE_DATABASE);
+        $pdo = new PDO('sqlite:' . PRIDGE_DATABASE);
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
         $pdo->exec('PRAGMA foreign_keys = ON');

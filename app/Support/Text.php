@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace PrintBridge\Support;
+namespace Pridge\Support;
 
 final class Text
 {
     /** @var array<string, string> */
     private const STRINGS = [
-        'app.name' => 'PrintBridge Server',
-        'about.open' => 'About PrintBridge Server',
+        'app.name' => 'Pridge Server',
+        'about.open' => 'About Pridge Server',
         'about.description' => 'A plain PHP and SQLite print job broker for shared hosting. It receives print jobs from plugins, queues them, and lets office clients pull and print them.',
         'about.version' => 'Version',
         'about.author' => 'Author',

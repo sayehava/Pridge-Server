@@ -2,21 +2,21 @@
 
 declare(strict_types=1);
 
-const PRINTBRIDGE_ROOT = __DIR__ . '/..';
-const PRINTBRIDGE_STORAGE = PRINTBRIDGE_ROOT . '/storage';
-const PRINTBRIDGE_DATABASE = PRINTBRIDGE_STORAGE . '/database/printbridge.sqlite';
-const PRINTBRIDGE_VERSION = '1.1.0';
+const PRIDGE_ROOT = __DIR__ . '/..';
+const PRIDGE_STORAGE = PRIDGE_ROOT . '/storage';
+const PRIDGE_DATABASE = PRIDGE_STORAGE . '/database/pridge.sqlite';
+const PRIDGE_VERSION = '1.1.0';
 
 date_default_timezone_set('UTC');
 
-foreach ([PRINTBRIDGE_STORAGE, dirname(PRINTBRIDGE_DATABASE)] as $directory) {
+foreach ([PRIDGE_STORAGE, dirname(PRIDGE_DATABASE)] as $directory) {
     if (!is_dir($directory)) {
         mkdir($directory, 0750, true);
     }
 }
 
 spl_autoload_register(static function (string $class): void {
-    $prefix = 'PrintBridge\\';
+    $prefix = 'Pridge\\';
 
     if (strncmp($class, $prefix, strlen($prefix)) !== 0) {
         return;
@@ -39,5 +39,5 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
     session_start();
 }
 
-\PrintBridge\Database::migrate();
-\PrintBridge\Services\ArchiveCleanupService::runIfDue();
+\Pridge\Database::migrate();
+\Pridge\Services\ArchiveCleanupService::runIfDue();

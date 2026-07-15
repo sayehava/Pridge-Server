@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace PrintBridge\Repositories;
+namespace Pridge\Repositories;
 
-use PrintBridge\Database;
-use PrintBridge\Support\Clock;
+use Pridge\Database;
+use Pridge\Support\Clock;
 
 final class SettingsRepository
 {

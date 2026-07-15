@@ -6,243 +6,243 @@ $path = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
 $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
 
 if ($path === '/health') {
-    \PrintBridge\Support\Http::text('ok');
+    \Pridge\Support\Http::text('ok');
     exit;
 }
 
 if ($path === '/') {
-    \PrintBridge\Controllers\AdminController::dashboard();
+    \Pridge\Controllers\AdminController::dashboard();
     exit;
 }
 
 if ($path === '/setup' && $method === 'GET') {
-    \PrintBridge\Controllers\AuthController::setupForm();
+    \Pridge\Controllers\AuthController::setupForm();
     exit;
 }
 
 if ($path === '/setup' && $method === 'POST') {
-    \PrintBridge\Controllers\AuthController::setup();
+    \Pridge\Controllers\AuthController::setup();
     exit;
 }
 
 if ($path === '/login' && $method === 'GET') {
-    \PrintBridge\Controllers\AuthController::loginForm();
+    \Pridge\Controllers\AuthController::loginForm();
     exit;
 }
 
 if ($path === '/login' && $method === 'POST') {
-    \PrintBridge\Controllers\AuthController::login();
+    \Pridge\Controllers\AuthController::login();
     exit;
 }
 
 if ($path === '/forgot-password' && $method === 'GET') {
-    \PrintBridge\Controllers\AuthController::forgotPasswordForm();
+    \Pridge\Controllers\AuthController::forgotPasswordForm();
     exit;
 }
 
 if ($path === '/forgot-password' && $method === 'POST') {
-    \PrintBridge\Controllers\AuthController::forgotPassword();
+    \Pridge\Controllers\AuthController::forgotPassword();
     exit;
 }
 
 if ($path === '/reset-password' && $method === 'GET') {
-    \PrintBridge\Controllers\AuthController::resetPasswordForm();
+    \Pridge\Controllers\AuthController::resetPasswordForm();
     exit;
 }
 
 if ($path === '/reset-password' && $method === 'POST') {
-    \PrintBridge\Controllers\AuthController::resetPassword();
+    \Pridge\Controllers\AuthController::resetPassword();
     exit;
 }
 
 if ($path === '/logout' && $method === 'POST') {
-    \PrintBridge\Controllers\AuthController::logout();
+    \Pridge\Controllers\AuthController::logout();
     exit;
 }
 
 if ($path === '/endpoints' && $method === 'GET') {
-    \PrintBridge\Controllers\EndpointController::index();
+    \Pridge\Controllers\EndpointController::index();
     exit;
 }
 
 if ($path === '/endpoints' && $method === 'POST') {
-    \PrintBridge\Controllers\EndpointController::create();
+    \Pridge\Controllers\EndpointController::create();
     exit;
 }
 
 if (preg_match('#^/endpoints/(\d+)/toggle$#', $path, $matches) && $method === 'POST') {
-    \PrintBridge\Controllers\EndpointController::toggle((int) $matches[1]);
+    \Pridge\Controllers\EndpointController::toggle((int) $matches[1]);
     exit;
 }
 
 if (preg_match('#^/endpoints/(\d+)/clients$#', $path, $matches) && $method === 'POST') {
-    \PrintBridge\Controllers\EndpointController::assignClients((int) $matches[1]);
+    \Pridge\Controllers\EndpointController::assignClients((int) $matches[1]);
     exit;
 }
 
 if (preg_match('#^/endpoints/(\d+)/rename$#', $path, $matches) && $method === 'POST') {
-    \PrintBridge\Controllers\EndpointController::rename((int) $matches[1]);
+    \Pridge\Controllers\EndpointController::rename((int) $matches[1]);
     exit;
 }
 
 if (preg_match('#^/endpoints/(\d+)/regenerate$#', $path, $matches) && $method === 'POST') {
-    \PrintBridge\Controllers\EndpointController::regenerateToken((int) $matches[1]);
+    \Pridge\Controllers\EndpointController::regenerateToken((int) $matches[1]);
     exit;
 }
 
 if (preg_match('#^/endpoints/(\d+)/delete$#', $path, $matches) && $method === 'POST') {
-    \PrintBridge\Controllers\EndpointController::delete((int) $matches[1]);
+    \Pridge\Controllers\EndpointController::delete((int) $matches[1]);
     exit;
 }
 
 if ($path === '/clients' && $method === 'GET') {
-    \PrintBridge\Controllers\ClientController::index();
+    \Pridge\Controllers\ClientController::index();
     exit;
 }
 
 if ($path === '/clients' && $method === 'POST') {
-    \PrintBridge\Controllers\ClientController::create();
+    \Pridge\Controllers\ClientController::create();
     exit;
 }
 
 if (preg_match('#^/clients/(\d+)/toggle$#', $path, $matches) && $method === 'POST') {
-    \PrintBridge\Controllers\ClientController::toggle((int) $matches[1]);
+    \Pridge\Controllers\ClientController::toggle((int) $matches[1]);
     exit;
 }
 
 if (preg_match('#^/clients/(\d+)/rename$#', $path, $matches) && $method === 'POST') {
-    \PrintBridge\Controllers\ClientController::rename((int) $matches[1]);
+    \Pridge\Controllers\ClientController::rename((int) $matches[1]);
     exit;
 }
 
 if (preg_match('#^/clients/(\d+)/regenerate$#', $path, $matches) && $method === 'POST') {
-    \PrintBridge\Controllers\ClientController::regenerateToken((int) $matches[1]);
+    \Pridge\Controllers\ClientController::regenerateToken((int) $matches[1]);
     exit;
 }
 
 if (preg_match('#^/clients/(\d+)/delete$#', $path, $matches) && $method === 'POST') {
-    \PrintBridge\Controllers\ClientController::delete((int) $matches[1]);
+    \Pridge\Controllers\ClientController::delete((int) $matches[1]);
     exit;
 }
 
 if ($path === '/api/plugin/jobs' && $method === 'POST') {
-    \PrintBridge\Controllers\ApiController::receiveJob();
+    \Pridge\Controllers\ApiController::receiveJob();
     exit;
 }
 
 if ($path === '/api/plugin/clients' && $method === 'POST') {
-    \PrintBridge\Controllers\ApiController::listEndpointClients();
+    \Pridge\Controllers\ApiController::listEndpointClients();
     exit;
 }
 
 if ($path === '/queue' && $method === 'GET') {
-    \PrintBridge\Controllers\QueueController::index();
+    \Pridge\Controllers\QueueController::index();
     exit;
 }
 
 if ($path === '/archive' && $method === 'GET') {
-    \PrintBridge\Controllers\QueueController::archive();
+    \Pridge\Controllers\QueueController::archive();
     exit;
 }
 
 if (preg_match('#^/queue/(\d+)$#', $path, $matches) && $method === 'GET') {
-    \PrintBridge\Controllers\QueueController::show((int) $matches[1]);
+    \Pridge\Controllers\QueueController::show((int) $matches[1]);
     exit;
 }
 
 if (preg_match('#^/queue/(\d+)/payload$#', $path, $matches) && $method === 'GET') {
-    \PrintBridge\Controllers\QueueController::payload((int) $matches[1]);
+    \Pridge\Controllers\QueueController::payload((int) $matches[1]);
     exit;
 }
 
 if (preg_match('#^/queue/(\d+)/delete$#', $path, $matches) && $method === 'POST') {
-    \PrintBridge\Controllers\QueueController::delete((int) $matches[1]);
+    \Pridge\Controllers\QueueController::delete((int) $matches[1]);
     exit;
 }
 
 if ($path === '/queue/delete-selected' && $method === 'POST') {
-    \PrintBridge\Controllers\QueueController::deleteSelectedWaiting();
+    \Pridge\Controllers\QueueController::deleteSelectedWaiting();
     exit;
 }
 
 if ($path === '/queue/delete-all' && $method === 'POST') {
-    \PrintBridge\Controllers\QueueController::deleteAllWaiting();
+    \Pridge\Controllers\QueueController::deleteAllWaiting();
     exit;
 }
 
 if ($path === '/archive/delete-selected' && $method === 'POST') {
-    \PrintBridge\Controllers\QueueController::deleteSelectedArchived();
+    \Pridge\Controllers\QueueController::deleteSelectedArchived();
     exit;
 }
 
 if ($path === '/archive/delete-all' && $method === 'POST') {
-    \PrintBridge\Controllers\QueueController::deleteAllArchived();
+    \Pridge\Controllers\QueueController::deleteAllArchived();
     exit;
 }
 
 if ($path === '/settings' && $method === 'GET') {
-    \PrintBridge\Controllers\SettingsController::index();
+    \Pridge\Controllers\SettingsController::index();
     exit;
 }
 
 if ($path === '/settings/password' && $method === 'POST') {
-    \PrintBridge\Controllers\SettingsController::changePassword();
+    \Pridge\Controllers\SettingsController::changePassword();
     exit;
 }
 
 if ($path === '/settings/archive-retention' && $method === 'POST') {
-    \PrintBridge\Controllers\SettingsController::updateArchiveRetention();
+    \Pridge\Controllers\SettingsController::updateArchiveRetention();
     exit;
 }
 
 if ($path === '/settings/mail' && $method === 'POST') {
-    \PrintBridge\Controllers\SettingsController::updateMail();
+    \Pridge\Controllers\SettingsController::updateMail();
     exit;
 }
 
 if ($path === '/api/client/auth' && $method === 'POST') {
-    \PrintBridge\Controllers\ApiController::authenticateClient();
+    \Pridge\Controllers\ApiController::authenticateClient();
     exit;
 }
 
 if ($path === '/api/client/jobs' && $method === 'GET') {
-    \PrintBridge\Controllers\ApiController::listClientJobs();
+    \Pridge\Controllers\ApiController::listClientJobs();
     exit;
 }
 
 if ($path === '/api/client/endpoints' && $method === 'GET') {
-    \PrintBridge\Controllers\ApiController::listClientEndpoints();
+    \Pridge\Controllers\ApiController::listClientEndpoints();
     exit;
 }
 
 if ($path === '/api/client/endpoints' && $method === 'PUT') {
-    \PrintBridge\Controllers\ApiController::syncClientEndpoints();
+    \Pridge\Controllers\ApiController::syncClientEndpoints();
     exit;
 }
 
 if ($path === '/api/client/jobs/reserve' && $method === 'POST') {
-    \PrintBridge\Controllers\ApiController::reserveClientJob();
+    \Pridge\Controllers\ApiController::reserveClientJob();
     exit;
 }
 
 if (preg_match('#^/api/client/jobs/(\d+)/printing$#', $path, $matches) && $method === 'POST') {
-    \PrintBridge\Controllers\ApiController::markPrinting((int) $matches[1]);
+    \Pridge\Controllers\ApiController::markPrinting((int) $matches[1]);
     exit;
 }
 
 if (preg_match('#^/api/client/jobs/(\d+)/printed$#', $path, $matches) && $method === 'POST') {
-    \PrintBridge\Controllers\ApiController::markPrinted((int) $matches[1]);
+    \Pridge\Controllers\ApiController::markPrinted((int) $matches[1]);
     exit;
 }
 
 if (preg_match('#^/api/client/jobs/(\d+)/failed$#', $path, $matches) && $method === 'POST') {
-    \PrintBridge\Controllers\ApiController::markFailed((int) $matches[1]);
+    \Pridge\Controllers\ApiController::markFailed((int) $matches[1]);
     exit;
 }
 
 if ($path === '/api/client/heartbeat' && $method === 'POST') {
-    \PrintBridge\Controllers\ApiController::heartbeat();
+    \Pridge\Controllers\ApiController::heartbeat();
     exit;
 }
 
-\PrintBridge\Support\Http::notFound();
+\Pridge\Support\Http::notFound();

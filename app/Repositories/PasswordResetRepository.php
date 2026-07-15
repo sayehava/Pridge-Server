@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace PrintBridge\Repositories;
+namespace Pridge\Repositories;
 
 use PDO;
-use PrintBridge\Database;
-use PrintBridge\Support\Clock;
-use PrintBridge\Support\Security;
+use Pridge\Database;
+use Pridge\Support\Clock;
+use Pridge\Support\Security;
 
 final class PasswordResetRepository
 {

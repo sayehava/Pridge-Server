@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PrintBridge\Support;
+namespace Pridge\Support;
 
 final class Http
 {

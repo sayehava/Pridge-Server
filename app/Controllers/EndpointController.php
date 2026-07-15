@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace PrintBridge\Controllers;
+namespace Pridge\Controllers;
 
-use PrintBridge\Repositories\ClientRepository;
-use PrintBridge\Repositories\EndpointRepository;
-use PrintBridge\Services\AdminAuth;
-use PrintBridge\Support\Flash;
-use PrintBridge\Support\Http;
-use PrintBridge\Support\View;
+use Pridge\Repositories\ClientRepository;
+use Pridge\Repositories\EndpointRepository;
+use Pridge\Services\AdminAuth;
+use Pridge\Support\Flash;
+use Pridge\Support\Http;
+use Pridge\Support\View;
 
 final class EndpointController
 {

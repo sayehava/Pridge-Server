@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace PrintBridge\Controllers;
+namespace Pridge\Controllers;
 
-use PrintBridge\Repositories\AdminRepository;
-use PrintBridge\Repositories\LoginAttemptRepository;
-use PrintBridge\Repositories\PasswordResetRepository;
-use PrintBridge\Services\AdminAuth;
-use PrintBridge\Services\Mailer;
-use PrintBridge\Support\Http;
-use PrintBridge\Support\Security;
-use PrintBridge\Support\View;
+use Pridge\Repositories\AdminRepository;
+use Pridge\Repositories\LoginAttemptRepository;
+use Pridge\Repositories\PasswordResetRepository;
+use Pridge\Services\AdminAuth;
+use Pridge\Services\Mailer;
+use Pridge\Support\Http;
+use Pridge\Support\Security;
+use Pridge\Support\View;
 
 final class AuthController
 {
@@ -101,8 +101,8 @@ final class AuthController
         if ($admin !== null && !empty($admin['email'])) {
             $token = PasswordResetRepository::create((int) $admin['id']);
             $link = self::baseUrl() . '/reset-password?token=' . rawurlencode($token);
-            $subject = 'PrintBridge password reset';
-            $body = "Use this link to reset your PrintBridge admin password:\n\n" . $link . "\n\nThis link expires in one hour.";
+            $subject = 'Pridge password reset';
+            $body = "Use this link to reset your Pridge admin password:\n\n" . $link . "\n\nThis link expires in one hour.";
             Mailer::send((string) $admin['email'], $subject, $body);
         }
 

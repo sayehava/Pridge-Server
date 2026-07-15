@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PrintBridge\Support;
+namespace Pridge\Support;
 
 final class View
 {
@@ -13,9 +13,9 @@ final class View
     {
         extract($data, EXTR_SKIP);
 
-        require PRINTBRIDGE_ROOT . '/views/layout/header.php';
-        require PRINTBRIDGE_ROOT . '/views/' . $template . '.php';
-        require PRINTBRIDGE_ROOT . '/views/layout/footer.php';
+        require PRIDGE_ROOT . '/views/layout/header.php';
+        require PRIDGE_ROOT . '/views/' . $template . '.php';
+        require PRIDGE_ROOT . '/views/layout/footer.php';
     }
 
     public static function e(string $value): string

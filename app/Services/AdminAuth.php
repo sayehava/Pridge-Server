@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace PrintBridge\Services;
+namespace Pridge\Services;
 
-use PrintBridge\Repositories\AdminRepository;
-use PrintBridge\Support\Http;
+use Pridge\Repositories\AdminRepository;
+use Pridge\Support\Http;
 
 final class AdminAuth
 {
