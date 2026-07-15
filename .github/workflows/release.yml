@@ -1,0 +1,44 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Resolve version from tag
+        id: version
+        run: echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+
+      - name: Verify PRINTBRIDGE_VERSION matches tag
+        run: |
+          declared=$(grep -oP "PRINTBRIDGE_VERSION = '\K[^']+" app/bootstrap.php)
+          if [ "$declared" != "${{ steps.version.outputs.version }}" ]; then
+            echo "::error::Tag ${GITHUB_REF_NAME} does not match PRINTBRIDGE_VERSION ($declared) in app/bootstrap.php"
+            exit 1
+          fi
+
+      - name: Build release archive
+        run: |
+          git archive --format=zip \
+            --prefix="printbridge-server-${{ steps.version.outputs.version }}/" \
+            -o "printbridge-server-${{ steps.version.outputs.version }}.zip" \
+            HEAD
+
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${GITHUB_REF_NAME}" \
+            "printbridge-server-${{ steps.version.outputs.version }}.zip" \
+            --title "${GITHUB_REF_NAME}" \
+            --generate-notes
