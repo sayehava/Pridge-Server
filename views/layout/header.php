@@ -1,8 +1,8 @@
 <?php
 
-use PrintBridge\Services\AdminAuth;
-use PrintBridge\Support\Text;
-use PrintBridge\Support\View;
+use Pridge\Services\AdminAuth;
+use Pridge\Support\Text;
+use Pridge\Support\View;
 
 $title = $title ?? Text::get('app.name');
 $isLoggedIn = AdminAuth::userId() !== null;
@@ -48,7 +48,7 @@ $isLoggedIn = AdminAuth::userId() !== null;
         <p class="about-description"><?= View::e(Text::get('about.description')) ?></p>
         <dl class="definition-list">
             <dt><?= View::e(Text::get('about.version')) ?></dt>
-            <dd><?= View::e(PRINTBRIDGE_VERSION) ?></dd>
+            <dd><?= View::e(PRIDGE_VERSION) ?></dd>
             <dt><?= View::e(Text::get('about.author')) ?></dt>
             <dd>Sayeh Ava Pazouki</dd>
             <dt><?= View::e(Text::get('about.license')) ?></dt>

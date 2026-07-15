@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use PrintBridge\Support\Text;
-use PrintBridge\Support\View;
+use Pridge\Support\Text;
+use Pridge\Support\View;
 
 /** @var array<int, array<string, mixed>> $jobs */
 /** @var string $emptyTextKey */
@@ -73,7 +73,7 @@ use PrintBridge\Support\View;
         </form>
     <?php endif; ?>
 
-    <?php require PRINTBRIDGE_ROOT . '/views/queue/_pagination.php'; ?>
+    <?php require PRIDGE_ROOT . '/views/queue/_pagination.php'; ?>
 
     <script>
         (function () {

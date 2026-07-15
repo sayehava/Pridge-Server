@@ -1,7 +1,7 @@
 <?php
 
-use PrintBridge\Support\Text;
-use PrintBridge\Support\View;
+use Pridge\Support\Text;
+use Pridge\Support\View;
 
 $title = Text::get('archive.title');
 ?>
@@ -18,6 +18,6 @@ $title = Text::get('archive.title');
     $deleteSelectedAction = '/archive/delete-selected';
     $deleteAllAction = '/archive/delete-all';
     $deleteAllConfirmKey = 'confirm.delete_all_archived';
-    require PRINTBRIDGE_ROOT . '/views/queue/_table.php';
+    require PRIDGE_ROOT . '/views/queue/_table.php';
     ?>
 </section>

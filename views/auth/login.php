@@ -1,7 +1,7 @@
 <?php
 
-use PrintBridge\Support\Text;
-use PrintBridge\Support\View;
+use Pridge\Support\Text;
+use Pridge\Support\View;
 
 $title = Text::get('login.title');
 ?>

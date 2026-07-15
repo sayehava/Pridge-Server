@@ -1,7 +1,7 @@
 <?php
 
-use PrintBridge\Support\Text;
-use PrintBridge\Support\View;
+use Pridge\Support\Text;
+use Pridge\Support\View;
 
 $title = Text::get('queue.title');
 ?>
@@ -18,6 +18,6 @@ $title = Text::get('queue.title');
     $deleteSelectedAction = '/queue/delete-selected';
     $deleteAllAction = '/queue/delete-all';
     $deleteAllConfirmKey = 'confirm.delete_all_waiting';
-    require PRINTBRIDGE_ROOT . '/views/queue/_table.php';
+    require PRIDGE_ROOT . '/views/queue/_table.php';
     ?>
 </section>

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use PrintBridge\Support\Pagination;
-use PrintBridge\Support\Text;
-use PrintBridge\Support\View;
+use Pridge\Support\Pagination;
+use Pridge\Support\Text;
+use Pridge\Support\View;
 
 /** @var int $total */
 /** @var int $page */

@@ -1,7 +1,7 @@
 <?php
 
-use PrintBridge\Support\Text;
-use PrintBridge\Support\View;
+use Pridge\Support\Text;
+use Pridge\Support\View;
 
 $title = Text::get('settings.title');
 ?>
@@ -40,12 +40,12 @@ $title = Text::get('settings.title');
     <p class="panel-help"><?= View::e(Text::get('settings.archive_retention_help')) ?></p>
     <form method="post" action="/settings/archive-retention" class="form">
         <label class="radio-option">
-            <input type="radio" name="mode" value="never" <?= $archiveMode === 'never' ? 'checked' : '' ?> onchange="printbridgeToggleArchiveRetention()">
+            <input type="radio" name="mode" value="never" <?= $archiveMode === 'never' ? 'checked' : '' ?> onchange="pridgeToggleArchiveRetention()">
             <span><?= View::e(Text::get('archive_retention.never')) ?></span>
         </label>
 
         <label class="radio-option">
-            <input type="radio" name="mode" value="preset" <?= $archiveMode === 'preset' ? 'checked' : '' ?> onchange="printbridgeToggleArchiveRetention()">
+            <input type="radio" name="mode" value="preset" <?= $archiveMode === 'preset' ? 'checked' : '' ?> onchange="pridgeToggleArchiveRetention()">
             <span><?= View::e(Text::get('archive_retention.preset')) ?></span>
             <select name="preset_days" id="archive-preset-select" <?= $archiveMode !== 'preset' ? 'disabled' : '' ?>>
                 <?php foreach ($archivePresets as $days => $labelKey): ?>
@@ -55,7 +55,7 @@ $title = Text::get('settings.title');
         </label>
 
         <label class="radio-option">
-            <input type="radio" name="mode" value="custom" <?= $archiveMode === 'custom' ? 'checked' : '' ?> onchange="printbridgeToggleArchiveRetention()">
+            <input type="radio" name="mode" value="custom" <?= $archiveMode === 'custom' ? 'checked' : '' ?> onchange="pridgeToggleArchiveRetention()">
             <span><?= View::e(Text::get('archive_retention.custom')) ?></span>
             <input type="number" name="custom_days" id="archive-custom-input" min="1" max="3650"
                    value="<?= $archiveMode === 'custom' ? (int) $archiveDays : '' ?>"
@@ -68,7 +68,7 @@ $title = Text::get('settings.title');
 </section>
 
 <script>
-    function printbridgeToggleArchiveRetention() {
+    function pridgeToggleArchiveRetention() {
         var mode = document.querySelector('input[name="mode"]:checked').value;
         document.getElementById('archive-preset-select').disabled = mode !== 'preset';
         document.getElementById('archive-custom-input').disabled = mode !== 'custom';
@@ -80,12 +80,12 @@ $title = Text::get('settings.title');
     <p class="panel-help"><?= View::e(Text::get('settings.mail_help')) ?></p>
     <form method="post" action="/settings/mail" class="form">
         <label class="radio-option">
-            <input type="radio" name="driver" value="php_mail" <?= $mailDriver === 'php_mail' ? 'checked' : '' ?> onchange="printbridgeToggleMailDriver()">
+            <input type="radio" name="driver" value="php_mail" <?= $mailDriver === 'php_mail' ? 'checked' : '' ?> onchange="pridgeToggleMailDriver()">
             <span><?= View::e(Text::get('mail_driver.php_mail')) ?></span>
         </label>
 
         <label class="radio-option">
-            <input type="radio" name="driver" value="smtp" <?= $mailDriver === 'smtp' ? 'checked' : '' ?> onchange="printbridgeToggleMailDriver()">
+            <input type="radio" name="driver" value="smtp" <?= $mailDriver === 'smtp' ? 'checked' : '' ?> onchange="pridgeToggleMailDriver()">
             <span><?= View::e(Text::get('mail_driver.smtp')) ?></span>
         </label>
 
@@ -130,7 +130,7 @@ $title = Text::get('settings.title');
 </section>
 
 <script>
-    function printbridgeToggleMailDriver() {
+    function pridgeToggleMailDriver() {
         var driver = document.querySelector('input[name="driver"]:checked').value;
         document.getElementById('smtp-fields').hidden = driver !== 'smtp';
     }
