@@ -195,6 +195,11 @@ if ($path === '/settings/archive-retention' && $method === 'POST') {
     exit;
 }
 
+if ($path === '/settings/mail' && $method === 'POST') {
+    \PrintBridge\Controllers\SettingsController::updateMail();
+    exit;
+}
+
 if ($path === '/api/client/auth' && $method === 'POST') {
     \PrintBridge\Controllers\ApiController::authenticateClient();
     exit;

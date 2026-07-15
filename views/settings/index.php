@@ -76,6 +76,67 @@ $title = Text::get('settings.title');
 </script>
 
 <section class="panel">
+    <h2><?= View::e(Text::get('settings.mail')) ?></h2>
+    <p class="panel-help"><?= View::e(Text::get('settings.mail_help')) ?></p>
+    <form method="post" action="/settings/mail" class="form">
+        <label class="radio-option">
+            <input type="radio" name="driver" value="php_mail" <?= $mailDriver === 'php_mail' ? 'checked' : '' ?> onchange="printbridgeToggleMailDriver()">
+            <span><?= View::e(Text::get('mail_driver.php_mail')) ?></span>
+        </label>
+
+        <label class="radio-option">
+            <input type="radio" name="driver" value="smtp" <?= $mailDriver === 'smtp' ? 'checked' : '' ?> onchange="printbridgeToggleMailDriver()">
+            <span><?= View::e(Text::get('mail_driver.smtp')) ?></span>
+        </label>
+
+        <div id="smtp-fields" <?= $mailDriver !== 'smtp' ? 'hidden' : '' ?>>
+            <label>
+                <?= View::e(Text::get('field.smtp_host')) ?>
+                <input name="smtp_host" type="text" value="<?= View::e($smtpSettings['host']) ?>">
+            </label>
+            <label>
+                <?= View::e(Text::get('field.smtp_port')) ?>
+                <input name="smtp_port" type="number" min="1" max="65535" value="<?= View::e((string) $smtpSettings['port']) ?>">
+            </label>
+            <label>
+                <?= View::e(Text::get('field.smtp_encryption')) ?>
+                <select name="smtp_encryption">
+                    <?php foreach (['tls', 'ssl', 'none'] as $option): ?>
+                        <option value="<?= $option ?>" <?= $smtpSettings['encryption'] === $option ? 'selected' : '' ?>><?= View::e(Text::get('smtp_encryption.' . $option)) ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </label>
+            <label>
+                <?= View::e(Text::get('field.smtp_username')) ?>
+                <input name="smtp_username" type="text" autocomplete="off" value="<?= View::e($smtpSettings['username']) ?>">
+            </label>
+            <label>
+                <?= View::e(Text::get('field.smtp_password')) ?>
+                <input name="smtp_password" type="password" autocomplete="new-password" placeholder="<?= $smtpSettings['password'] !== '' ? '••••••••' : '' ?>">
+                <small><?= View::e(Text::get('field.smtp_password_help')) ?></small>
+            </label>
+            <label>
+                <?= View::e(Text::get('field.smtp_from_address')) ?>
+                <input name="smtp_from_address" type="email" value="<?= View::e($smtpSettings['from_address']) ?>">
+            </label>
+            <label>
+                <?= View::e(Text::get('field.smtp_from_name')) ?>
+                <input name="smtp_from_name" type="text" value="<?= View::e($smtpSettings['from_name']) ?>">
+            </label>
+        </div>
+
+        <button class="button" type="submit"><?= View::e(Text::get('action.update')) ?></button>
+    </form>
+</section>
+
+<script>
+    function printbridgeToggleMailDriver() {
+        var driver = document.querySelector('input[name="driver"]:checked').value;
+        document.getElementById('smtp-fields').hidden = driver !== 'smtp';
+    }
+</script>
+
+<section class="panel">
     <h2><?= View::e(Text::get('settings.storage')) ?></h2>
     <dl class="definition-list">
         <dt><?= View::e(Text::get('settings.sqlite_database')) ?></dt>

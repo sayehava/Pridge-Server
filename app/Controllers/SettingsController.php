@@ -7,6 +7,7 @@ namespace PrintBridge\Controllers;
 use PrintBridge\Repositories\AdminRepository;
 use PrintBridge\Services\AdminAuth;
 use PrintBridge\Services\ArchiveRetention;
+use PrintBridge\Services\Mailer;
 use PrintBridge\Support\Flash;
 use PrintBridge\Support\Http;
 use PrintBridge\Support\View;
@@ -16,6 +17,8 @@ final class SettingsController
     public static function index(): void
     {
         AdminAuth::requireLogin();
+        $smtpSettings = Mailer::smtpSettings();
+
         View::render('settings/index', [
             'message' => Flash::pull('message'),
             'error' => Flash::pull('error'),
@@ -23,7 +26,35 @@ final class SettingsController
             'archiveMode' => ArchiveRetention::currentMode(),
             'archiveDays' => ArchiveRetention::currentDays(),
             'archivePresets' => ArchiveRetention::presets(),
+            'mailDriver' => Mailer::currentDriver(),
+            'smtpSettings' => $smtpSettings,
         ]);
+    }
+
+    public static function updateMail(): void
+    {
+        AdminAuth::requireLogin();
+
+        $submission = Mailer::resolveSubmission(
+            Http::post('driver'),
+            Http::post('smtp_host'),
+            Http::post('smtp_port'),
+            Http::post('smtp_encryption'),
+            Http::post('smtp_username'),
+            Http::post('smtp_password'),
+            Http::post('smtp_from_address'),
+            Http::post('smtp_from_name')
+        );
+
+        if ($submission === null) {
+            Flash::set('error', 'error.invalid_mail_settings');
+            Http::redirect('/settings');
+            return;
+        }
+
+        Mailer::save($submission);
+        Flash::set('message', 'settings.mail_saved');
+        Http::redirect('/settings');
     }
 
     public static function updateArchiveRetention(): void
