@@ -34,6 +34,19 @@ jobs:
             -o "pridge-server-${{ steps.version.outputs.version }}.zip" \
             HEAD
 
+      - name: Extract release notes from CHANGELOG.md
+        run: |
+          awk -v ver="${{ steps.version.outputs.version }}" '
+            $0 == "## [" ver "]" { found=1; next }
+            found && /^## \[/ { exit }
+            found { print }
+          ' CHANGELOG.md > release-notes.md
+
+          if [ ! -s release-notes.md ]; then
+            echo "::error::No '## [${{ steps.version.outputs.version }}]' section found in CHANGELOG.md. Add one before tagging a release."
+            exit 1
+          fi
+
       - name: Create GitHub release
         env:
           GH_TOKEN: ${{ github.token }}
@@ -41,4 +54,4 @@ jobs:
           gh release create "${GITHUB_REF_NAME}" \
             "pridge-server-${{ steps.version.outputs.version }}.zip" \
             --title "${GITHUB_REF_NAME}" \
-            --generate-notes
+            --notes-file release-notes.md
