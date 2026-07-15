@@ -8,6 +8,7 @@ use PrintBridge\Repositories\AdminRepository;
 use PrintBridge\Repositories\LoginAttemptRepository;
 use PrintBridge\Repositories\PasswordResetRepository;
 use PrintBridge\Services\AdminAuth;
+use PrintBridge\Services\Mailer;
 use PrintBridge\Support\Http;
 use PrintBridge\Support\Security;
 use PrintBridge\Support\View;
@@ -102,7 +103,7 @@ final class AuthController
             $link = self::baseUrl() . '/reset-password?token=' . rawurlencode($token);
             $subject = 'PrintBridge password reset';
             $body = "Use this link to reset your PrintBridge admin password:\n\n" . $link . "\n\nThis link expires in one hour.";
-            @mail((string) $admin['email'], $subject, $body);
+            Mailer::send((string) $admin['email'], $subject, $body);
         }
 
         View::render('auth/forgot-password', ['message' => 'password.forgot_sent']);
