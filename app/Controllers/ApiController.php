@@ -6,6 +6,7 @@ namespace Pridge\Controllers;
 
 use Pridge\Repositories\ApiRepository;
 use Pridge\Support\Http;
+use Pridge\Support\Version;
 
 final class ApiController
 {
@@ -29,7 +30,12 @@ final class ApiController
         $metadataJson = self::metadataJson();
         $jobId = ApiRepository::storeJob((int) $endpoint['id'], $payload, $contentType, $metadataJson);
 
-        Http::json(['job_id' => $jobId, 'status' => 'pending'], 201);
+        Http::json(array_filter([
+            'job_id' => $jobId,
+            'status' => 'pending',
+            'server_version' => PRIDGE_VERSION,
+            'compatibility_warning' => Version::compatibilityWarning(self::moduleVersion(), 'module'),
+        ], static fn ($value) => $value !== null), 201);
     }
 
     public static function listEndpointClients(): void
@@ -71,12 +77,16 @@ final class ApiController
         $sessionToken = ApiRepository::createClientSession((int) $client['id']);
         ApiRepository::updateHeartbeat((int) $client['id']);
 
-        Http::json([
+        $clientVersion = isset($input['client_version']) && is_string($input['client_version']) ? $input['client_version'] : null;
+
+        Http::json(array_filter([
             'token' => $sessionToken,
             'token_type' => 'Bearer',
             'expires_in' => 86400,
             'client' => ['id' => (int) $client['id'], 'name' => $client['name']],
-        ]);
+            'server_version' => PRIDGE_VERSION,
+            'compatibility_warning' => Version::compatibilityWarning($clientVersion, 'client'),
+        ], static fn ($value) => $value !== null));
     }
 
     public static function listClientJobs(): void
@@ -246,6 +256,13 @@ final class ApiController
         json_decode($metadata);
 
         return json_last_error() === JSON_ERROR_NONE ? $metadata : json_encode(['raw' => $metadata]);
+    }
+
+    private static function moduleVersion(): ?string
+    {
+        $version = $_SERVER['HTTP_X_PRIDGE_MODULE_VERSION'] ?? null;
+
+        return is_string($version) && $version !== '' ? $version : null;
     }
 
     /**

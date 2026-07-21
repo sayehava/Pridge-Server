@@ -115,11 +115,12 @@ POST /api/plugin/jobs
 Authorization: Bearer ENDPOINT_TOKEN
 Content-Type: application/octet-stream
 X-Pridge-Metadata: {"source":"woocommerce","order_id":"1001"}
+X-Pridge-Module-Version: 1.0.0
 
 RAW_PRINT_PAYLOAD
 ```
 
-The server stores the raw request body as the print payload.
+The server stores the raw request body as the print payload. `X-Pridge-Module-Version` is optional; when present, the response includes `server_version` and, if the module's major version differs from the server's, a `compatibility_warning` string ("please update the module" or "please update the server"). This is advisory only — a version mismatch never blocks the job.
 
 Building a plugin for WordPress, Joomla, PrestaShop, or another platform to submit jobs automatically? See [`docs/module-development.md`](docs/module-development.md).
 
@@ -141,10 +142,10 @@ Authenticate:
 POST /api/client/auth
 Content-Type: application/json
 
-{"token":"CLIENT_TOKEN"}
+{"token":"CLIENT_TOKEN","client_version":"1.2.1"}
 ```
 
-The response contains a temporary bearer token for client API calls.
+The response contains a temporary bearer token for client API calls. `client_version` is optional; when present, the response includes `server_version` and, if the client's major version differs from the server's, a `compatibility_warning` string ("please update the client" or "please update the server"). This is advisory only — a version mismatch never blocks authentication.
 
 ## API Routes
 

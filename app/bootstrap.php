@@ -5,7 +5,7 @@ declare(strict_types=1);
 const PRIDGE_ROOT = __DIR__ . '/..';
 const PRIDGE_STORAGE = PRIDGE_ROOT . '/storage';
 const PRIDGE_DATABASE = PRIDGE_STORAGE . '/database/pridge.sqlite';
-const PRIDGE_VERSION = '1.1.1';
+const PRIDGE_VERSION = '1.2.0';
 
 date_default_timezone_set('UTC');
 

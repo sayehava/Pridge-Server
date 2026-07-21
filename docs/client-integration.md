@@ -22,6 +22,7 @@ POST /api/plugin/jobs
 Authorization: Bearer ENDPOINT_TOKEN
 Content-Type: application/octet-stream
 X-Pridge-Metadata: {"source":"woocommerce","order_id":"1001"}
+X-Pridge-Module-Version: 1.0.0
 
 RAW_PRINT_PAYLOAD_BYTES
 ```
@@ -31,7 +32,9 @@ Response:
 ```json
 {
   "job_id": 123,
-  "status": "pending"
+  "status": "pending",
+  "server_version": "1.1.1",
+  "compatibility_warning": null
 }
 ```
 
@@ -44,6 +47,7 @@ Notes:
 - Set `Content-Type` to the payload type when known.
 - Use `application/octet-stream` when the payload type is unknown.
 - `X-Pridge-Metadata` is optional and should contain JSON when possible.
+- `X-Pridge-Module-Version` is optional. When sent, the response's `compatibility_warning` is a human-readable string (telling you to update either the module or the server) if the module's and server's major versions differ, or omitted/null when they match or no version was sent. It is advisory only and never blocks the job.
 - The endpoint token must not be sent as a GET parameter.
 
 ## Plugin: Fetch Assigned Clients
@@ -93,8 +97,10 @@ Request:
 POST /api/client/auth
 Content-Type: application/json
 
-{"token":"CLIENT_TOKEN"}
+{"token":"CLIENT_TOKEN","client_version":"1.2.1"}
 ```
+
+`client_version` is optional. When sent, the response's `compatibility_warning` is a human-readable string (telling you to update either the client or the server) if the client's and server's major versions differ, or omitted/null when they match or no version was sent. It is advisory only and never blocks authentication.
 
 Response:
 
@@ -106,7 +112,9 @@ Response:
   "client": {
     "id": 2,
     "name": "Warehouse Laptop"
-  }
+  },
+  "server_version": "1.1.1",
+  "compatibility_warning": null
 }
 ```
 

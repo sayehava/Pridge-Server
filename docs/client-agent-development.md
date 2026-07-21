@@ -115,8 +115,10 @@ Request:
 POST /api/client/auth
 Content-Type: application/json
 
-{"token":"CLIENT_TOKEN"}
+{"token":"CLIENT_TOKEN","client_version":"1.2.1"}
 ```
+
+`client_version` is optional but recommended: send the running agent's own version so the server can tell you, and only you, when it and the server have drifted onto incompatible major versions.
 
 Response:
 
@@ -128,9 +130,13 @@ Response:
   "client": {
     "id": 2,
     "name": "Warehouse Laptop"
-  }
+  },
+  "server_version": "1.1.1",
+  "compatibility_warning": null
 }
 ```
+
+`compatibility_warning` is a human-readable string ("update the client" or "update the server") when `client_version` was sent and its major version differs from `server_version`; otherwise it is omitted or null. Treat it as advisory only — log it and/or surface it in your agent's UI, but never refuse to authenticate or stop polling because of it.
 
 Use the returned temporary token in the `Authorization` header:
 

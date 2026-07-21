@@ -4,6 +4,11 @@ All notable changes to this project are documented in this file.
 
 Changelog tracking starts at 1.1.0. Add a new `## [x.y.z]` section here before tagging a release; the release workflow publishes that section as the GitHub release notes and fails if it can't find one for the tag.
 
+## [1.2.0]
+
+### Added
+- Version compatibility checking between the server and its clients/modules. Clients can send `client_version` and endpoint modules can send an `X-Pridge-Module-Version` header; the server responds with its own `server_version` and, only when the peer's major version differs from the server's, a `compatibility_warning` string saying which side to update. This is advisory only — it never blocks authentication or a print job. See `docs/client-integration.md`, `docs/client-agent-development.md`, and `docs/module-development.md` for the exact request/response shape.
+
 ## [1.1.1]
 
 This is the first published release of Pridge Server: a self-hosted PHP + SQLite print job broker for shared hosting. It sits between whatever generates a print job (a WooCommerce store, a Dolibarr install, a custom ERP module) and the desktop clients that actually print it, with no database server and no long-running process required.

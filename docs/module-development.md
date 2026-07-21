@@ -40,6 +40,7 @@ POST /api/plugin/jobs
 Authorization: Bearer ENDPOINT_TOKEN
 Content-Type: application/octet-stream
 X-Pridge-Metadata: {"source":"woocommerce","order_id":"1001"}
+X-Pridge-Module-Version: 1.0.0
 
 RAW_PRINT_PAYLOAD_BYTES
 ```
@@ -49,7 +50,9 @@ Response (`201 Created`):
 ```json
 {
   "job_id": 123,
-  "status": "pending"
+  "status": "pending",
+  "server_version": "1.1.1",
+  "compatibility_warning": null
 }
 ```
 
@@ -75,6 +78,7 @@ Rules:
 - Send the endpoint token as a bearer token in the `Authorization` header, never in a URL query string.
 - Set `Content-Type` to the real payload type when known (`text/plain`, `application/pdf`, `image/png`). Use `application/octet-stream` for raw ESC/POS or ZPL data.
 - `X-Pridge-Metadata` is optional. Keep it small and JSON-encoded — it is stored alongside the job and shown to the client agent and in the admin queue view, not used for routing.
+- `X-Pridge-Module-Version` is optional. When sent, `compatibility_warning` in the response is a human-readable string telling you to update either your module or the server, only when the two major versions differ. It never blocks the job — treat it as something to log or surface to the site admin, not something to act on programmatically.
 
 ### List clients assigned to this endpoint (optional)
 
