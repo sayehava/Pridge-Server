@@ -4,6 +4,12 @@ All notable changes to this project are documented in this file.
 
 Changelog tracking starts at 1.1.0. Add a new `## [x.y.z]` section here before tagging a release; the release workflow publishes that section as the GitHub release notes and fails if it can't find one for the tag.
 
+## [1.1.1]
+
+### Fixed
+- Client sessions now slide their expiry forward on activity instead of expiring exactly 24 hours after creation, so a client left running continuously past that point no longer loses its session from uptime alone.
+- The Authorization header is now explicitly forwarded to PHP via `.htaccess`. Depending on the hosting environment's default Apache/PHP-CGI configuration, this header could fail to reach PHP at all, causing every Bearer-token API call (heartbeat, job reservation, endpoint sync) to be rejected with "Invalid client session" even immediately after a successful, fresh authentication.
+
 ## [1.1.0]
 
 ### Added
