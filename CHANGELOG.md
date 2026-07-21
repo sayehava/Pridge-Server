@@ -4,6 +4,11 @@ All notable changes to this project are documented in this file.
 
 Changelog tracking starts at 1.1.0. Add a new `## [x.y.z]` section here before tagging a release; the release workflow publishes that section as the GitHub release notes and fails if it can't find one for the tag.
 
+## [1.3.0]
+
+### Added
+- New `/updates` admin page: checks GitHub for new releases and lets an admin update the installation from the browser. Updating is a two-step, explicit process — a full backup is taken and the new release is downloaded and staged first, and nothing on the live site changes until a separate "Apply update now" confirmation. The database and everything else under `storage/` are never touched by an update. The last 5 backups are kept automatically, each with a one-click restore. Requires the PHP `curl` and `zip` extensions and write access to the installation directory. See the README's "Updates" section.
+
 ## [1.2.0]
 
 ### Added

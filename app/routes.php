@@ -200,6 +200,36 @@ if ($path === '/settings/mail' && $method === 'POST') {
     exit;
 }
 
+if ($path === '/updates' && $method === 'GET') {
+    \Pridge\Controllers\UpdateController::index();
+    exit;
+}
+
+if ($path === '/updates/check' && $method === 'POST') {
+    \Pridge\Controllers\UpdateController::check();
+    exit;
+}
+
+if ($path === '/updates/prepare' && $method === 'POST') {
+    \Pridge\Controllers\UpdateController::prepare();
+    exit;
+}
+
+if ($path === '/updates/discard' && $method === 'POST') {
+    \Pridge\Controllers\UpdateController::discard();
+    exit;
+}
+
+if ($path === '/updates/apply' && $method === 'POST') {
+    \Pridge\Controllers\UpdateController::apply();
+    exit;
+}
+
+if ($path === '/updates/rollback' && $method === 'POST') {
+    \Pridge\Controllers\UpdateController::rollback();
+    exit;
+}
+
 if ($path === '/api/client/auth' && $method === 'POST') {
     \Pridge\Controllers\ApiController::authenticateClient();
     exit;

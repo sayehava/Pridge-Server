@@ -204,6 +204,17 @@ storage/
 
 Stop write traffic before copying the SQLite file when possible. At minimum, keep timestamped backups and test restoration on a separate installation.
 
+## Updates
+
+The `/updates` admin page checks `github.com/sayehava/Pridge-Server` for new releases (at most once an hour, or on demand with "Check for updates"). Requires the PHP `curl` and `zip` extensions, and that PHP can write to its own installation directory.
+
+Updating is a two-step, explicit process — nothing on the live site changes until you confirm the final step:
+
+1. **Back up and download**: creates a full zip backup of the current installation (application files and the database) under `storage/backups/`, then downloads and unpacks the new release into a staging directory. The live application is untouched at this point.
+2. **Apply update now**: overlays the staged files onto the live installation. The database and everything else under `storage/` are never touched by this step.
+
+The last 5 backups are kept automatically. Each one has a **Restore this backup** button that overwrites the current application files and database with that backup's contents — the way back if an update causes a problem. A **Discard staged update** button is also available before applying, in case you change your mind after downloading.
+
 ## License
 
 Copyright (C) 2026 Sayeh Ava Pazouki

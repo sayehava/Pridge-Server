@@ -31,6 +31,7 @@ $isLoggedIn = AdminAuth::userId() !== null;
             <a href="/queue"><?= View::e(Text::get('nav.queue')) ?></a>
             <a href="/archive"><?= View::e(Text::get('nav.archive')) ?></a>
             <a href="/settings"><?= View::e(Text::get('nav.settings')) ?></a>
+            <a href="/updates"><?= View::e(Text::get('nav.updates')) ?></a>
         </nav>
         <form method="post" action="/logout" class="logout-form">
             <button class="button button-secondary" type="submit"><?= View::e(Text::get('action.logout')) ?></button>

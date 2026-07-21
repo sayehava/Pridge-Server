@@ -458,6 +458,19 @@ button {
     margin: 0 0 16px;
 }
 
+.update-notes {
+    white-space: pre-wrap;
+    word-break: break-word;
+    max-height: 260px;
+    overflow-y: auto;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 12px;
+    margin: 0 0 16px;
+    font-size: 13px;
+}
+
 .panel-actions {
     margin: 16px 0 0;
 }
