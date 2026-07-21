@@ -6,10 +6,14 @@ Changelog tracking starts at 1.1.0. Add a new `## [x.y.z]` section here before t
 
 ## [1.3.0]
 
+Includes the 1.2.0 changes below — 1.2.0 was never tagged as its own release, since 1.3.0 was ready within the same development session before either was published.
+
 ### Added
 - New `/updates` admin page: checks GitHub for new releases and lets an admin update the installation from the browser. Updating is a two-step, explicit process — a full backup is taken and the new release is downloaded and staged first, and nothing on the live site changes until a separate "Apply update now" confirmation. The database and everything else under `storage/` are never touched by an update. The last 5 backups are kept automatically, each with a one-click restore. Requires the PHP `curl` and `zip` extensions and write access to the installation directory. See the README's "Updates" section.
 
 ## [1.2.0]
+
+Not published as a separate release; folded into 1.3.0 above.
 
 ### Added
 - Version compatibility checking between the server and its clients/modules. Clients can send `client_version` and endpoint modules can send an `X-Pridge-Module-Version` header; the server responds with its own `server_version` and, only when the peer's major version differs from the server's, a `compatibility_warning` string saying which side to update. This is advisory only — it never blocks authentication or a print job. See `docs/client-integration.md`, `docs/client-agent-development.md`, and `docs/module-development.md` for the exact request/response shape.
