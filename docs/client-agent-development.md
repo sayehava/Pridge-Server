@@ -115,7 +115,7 @@ Request:
 POST /api/client/auth
 Content-Type: application/json
 
-{"token":"CLIENT_TOKEN","client_version":"1.2.1"}
+{"token":"CLIENT_TOKEN","client_version":"1.3.0"}
 ```
 
 `client_version` is optional but recommended: send the running agent's own version so the server can tell you, and only you, when it and the server have drifted onto incompatible major versions.
@@ -131,7 +131,7 @@ Response:
     "id": 2,
     "name": "Warehouse Laptop"
   },
-  "server_version": "1.1.1",
+  "server_version": "1.3.0",
   "compatibility_warning": null
 }
 ```

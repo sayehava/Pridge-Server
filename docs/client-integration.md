@@ -33,7 +33,7 @@ Response:
 {
   "job_id": 123,
   "status": "pending",
-  "server_version": "1.1.1",
+  "server_version": "1.3.0",
   "compatibility_warning": null
 }
 ```
@@ -97,7 +97,7 @@ Request:
 POST /api/client/auth
 Content-Type: application/json
 
-{"token":"CLIENT_TOKEN","client_version":"1.2.1"}
+{"token":"CLIENT_TOKEN","client_version":"1.3.0"}
 ```
 
 `client_version` is optional. When sent, the response's `compatibility_warning` is a human-readable string (telling you to update either the client or the server) if the client's and server's major versions differ, or omitted/null when they match or no version was sent. It is advisory only and never blocks authentication.
@@ -113,7 +113,7 @@ Response:
     "id": 2,
     "name": "Warehouse Laptop"
   },
-  "server_version": "1.1.1",
+  "server_version": "1.3.0",
   "compatibility_warning": null
 }
 ```

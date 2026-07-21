@@ -142,7 +142,7 @@ Authenticate:
 POST /api/client/auth
 Content-Type: application/json
 
-{"token":"CLIENT_TOKEN","client_version":"1.2.1"}
+{"token":"CLIENT_TOKEN","client_version":"1.3.0"}
 ```
 
 The response contains a temporary bearer token for client API calls. `client_version` is optional; when present, the response includes `server_version` and, if the client's major version differs from the server's, a `compatibility_warning` string ("please update the client" or "please update the server"). This is advisory only — a version mismatch never blocks authentication.

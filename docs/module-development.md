@@ -51,7 +51,7 @@ Response (`201 Created`):
 {
   "job_id": 123,
   "status": "pending",
-  "server_version": "1.1.1",
+  "server_version": "1.3.0",
   "compatibility_warning": null
 }
 ```
