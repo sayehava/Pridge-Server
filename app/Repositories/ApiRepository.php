@@ -11,6 +11,8 @@ use Pridge\Support\Security;
 
 final class ApiRepository
 {
+    private const SESSION_TTL_SECONDS = 86400;
+
     /**
      * @return array{id:int,name:string}|null
      */
@@ -51,8 +53,15 @@ final class ApiRepository
         $client = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if (is_array($client)) {
-            $update = Database::connection()->prepare('UPDATE client_sessions SET last_seen_at = :now WHERE token_hash = :token_hash');
-            $update->execute([':now' => $now, ':token_hash' => Security::hashToken($token)]);
+            // Sliding expiry: an actively polling client should never expire from uptime alone.
+            $update = Database::connection()->prepare(
+                'UPDATE client_sessions SET last_seen_at = :now, expires_at = :expires_at WHERE token_hash = :token_hash'
+            );
+            $update->execute([
+                ':now' => $now,
+                ':expires_at' => Clock::addSeconds(self::SESSION_TTL_SECONDS),
+                ':token_hash' => Security::hashToken($token),
+            ]);
 
             return $client;
         }
@@ -71,7 +80,7 @@ final class ApiRepository
         $stmt->execute([
             ':client_id' => $clientId,
             ':token_hash' => Security::hashToken($token),
-            ':expires_at' => Clock::addSeconds(86400),
+            ':expires_at' => Clock::addSeconds(self::SESSION_TTL_SECONDS),
             ':created_at' => $now,
             ':last_seen_at' => $now,
         ]);
