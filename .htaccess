@@ -2,12 +2,20 @@ Options -Indexes
 
 <IfModule mod_rewrite.c>
     RewriteEngine On
+
+    # Apache/PHP-CGI setups commonly drop the Authorization header before it
+    # reaches PHP unless it is explicitly forwarded as an environment
+    # variable here; without this every Bearer-token API call 401s even
+    # with a fresh, correct session.
+    RewriteCond %{HTTP:Authorization} .
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule ^ index.php [L]
 </IfModule>
 
-<FilesMatch "^(AGENTS\.md|README\.md)$">
+<FilesMatch "\.md$">
     <IfModule mod_authz_core.c>
         Require all denied
     </IfModule>

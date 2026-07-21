@@ -58,7 +58,9 @@ final class Http
 
     public static function bearerToken(): ?string
     {
-        $header = $_SERVER['HTTP_AUTHORIZATION'] ?? '';
+        // Some Apache/CGI configurations surface the forwarded header under
+        // REDIRECT_HTTP_AUTHORIZATION instead of HTTP_AUTHORIZATION.
+        $header = $_SERVER['HTTP_AUTHORIZATION'] ?? $_SERVER['REDIRECT_HTTP_AUTHORIZATION'] ?? '';
 
         if (!is_string($header) || stripos($header, 'Bearer ') !== 0) {
             return null;
