@@ -6,6 +6,43 @@ Changelog tracking starts at 1.1.0. Add a new `## [x.y.z]` section here before t
 
 ## [1.1.1]
 
+This is the first published release of Pridge Server: a self-hosted PHP + SQLite print job broker for shared hosting. It sits between whatever generates a print job (a WooCommerce store, a Dolibarr install, a custom ERP module) and the desktop clients that actually print it, with no database server and no long-running process required.
+
+### Core
+
+- Admin web UI for setup, endpoints, clients, queue, archive, and settings — plain PHP pages, no separate dashboard app.
+- SQLite storage created automatically on first run at `storage/database/pridge.sqlite`; `.htaccess` rules in `storage`, `app`, and `views` block direct web access to it and to internal PHP/view files.
+- Runs from either a cPanel-style document root or a stricter dedicated `public/` web root, with no code differences between the two.
+
+### Plugin-side job submission
+
+- `POST /api/plugin/jobs` accepts a raw print payload (ESC/POS, PDF, image, etc.) authenticated by a per-endpoint bearer token, with an optional `X-Pridge-Metadata` header for source context.
+- `POST /api/plugin/clients` lets an authenticated endpoint discover which clients are assigned to it.
+- Guides for building source-side integrations in `docs/module-development.md` (WordPress, Joomla, PrestaShop, Magento, OpenCart, Drupal, TYPO3, or plain PHP).
+
+### Client-side job pulling
+
+- `POST /api/client/auth` exchanges a long-lived client token for a temporary session bearer token.
+- `GET /api/client/endpoints` / `PUT /api/client/endpoints` let a client discover and self-manage which virtual printer endpoints it is assigned to.
+- `POST /api/client/jobs/reserve` reserves the next pending job as a base64 payload; unconfirmed reservations automatically return to `pending` after the reservation timeout.
+- `POST /api/client/jobs/{id}/printing|printed|failed` report job progress and outcome.
+- `POST /api/client/heartbeat` keeps the client's last-seen status current.
+- Guide for building a client in `docs/client-agent-development.md`.
+
+### Endpoints, clients, and the queue
+
+- Endpoints and clients each get a one-time-displayed token, and can be renamed, disabled, deleted (once they have no job history), and have their token regenerated.
+- Assignment between clients and endpoints is managed from either side, in the admin UI or via the client API.
+- Jobs move through `pending → reserved → printing → printed`/`failed`/`cancelled`. The `/queue` page shows only active jobs; `/archive` holds completed and cancelled history, with pagination, bulk delete, and configurable retention.
+- Every job's payload can be previewed inline (image, PDF, text) or downloaded (unrecognized binary, e.g. raw ESC/POS), detected from the stored content type first and the payload's own bytes as a fallback.
+
+### Security and account management
+
+- First-run `/setup` creates the initial admin account (12+ character password minimum) and disables itself afterward.
+- Escalating login throttling: 3 failed attempts locks an account for 15 minutes; repeat offenses within that window escalate to a 24-hour lockout.
+- Password recovery via PHP `mail()` or a dependency-free raw-socket SMTP client configurable from Settings (host, port, STARTTLS/SSL/none, credentials, from-address).
+- GPL-3.0-or-later licensed, with an additional attribution term requiring modified or redistributed versions to keep a visible author credit in their UI.
+
 ### Fixed
 - Client sessions now slide their expiry forward on activity instead of expiring exactly 24 hours after creation, so a client left running continuously past that point no longer loses its session from uptime alone.
 - The Authorization header is now explicitly forwarded to PHP via `.htaccess`. Depending on the hosting environment's default Apache/PHP-CGI configuration, this header could fail to reach PHP at all, causing every Bearer-token API call (heartbeat, job reservation, endpoint sync) to be rejected with "Invalid client session" even immediately after a successful, fresh authentication.
